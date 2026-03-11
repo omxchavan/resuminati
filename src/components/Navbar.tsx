@@ -38,14 +38,17 @@ export default function Navbar() {
 
                 {/* Desktop nav */}
                 <div className="hidden md:flex items-center gap-1">
+                    <Link href="/roast" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5 font-medium text-orange-400">
+                        AI Roaster
+                    </Link>
                     <Link href="/dashboard" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5">
-                        Dashboard
+                        ATS
                     </Link>
                     <Link href="/job-match" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5">
                         Job Match
                     </Link>
                     <Link href="/improve" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5">
-                        AI Tools
+                        Redesign
                     </Link>
                 </div>
 
@@ -100,6 +103,9 @@ export default function Navbar() {
                     <div className="px-4 py-3 space-y-1">
                         <Link href="/dashboard" className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-white/5" onClick={() => setMobileOpen(false)}>
                             Dashboard
+                        </Link>
+                        <Link href="/roast" className="block px-3 py-2 text-sm font-medium text-orange-400 hover:text-orange-300 rounded-md hover:bg-white/5" onClick={() => setMobileOpen(false)}>
+                            AI Roaster
                         </Link>
                         <Link href="/job-match" className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-white/5" onClick={() => setMobileOpen(false)}>
                             Job Match

@@ -4,19 +4,16 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import ATSScoreChart from "@/components/ATSScoreChart";
-import RoastCard from "@/components/RoastCard";
 import FeedbackSection from "@/components/FeedbackSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-    Flame,
     Target,
     Loader2,
     FileText,
     Zap,
-    ThermometerSun,
     Sparkles,
     BarChart3,
     TrendingUp,
@@ -41,25 +38,14 @@ interface AnalysisData {
     improvements: string[];
 }
 
-interface RoastData {
-    roastLevel: "mild" | "spicy" | "brutal";
-    roastText: string;
-}
-
 export default function DashboardPage() {
     const [resumeData, setResumeData] = useState<ResumeData | null>(null);
     const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
-    const [roast, setRoast] = useState<RoastData | null>(null);
     const [analyzing, setAnalyzing] = useState(false);
-    const [roasting, setRoasting] = useState(false);
-    const [selectedRoastLevel, setSelectedRoastLevel] = useState<
-        "mild" | "spicy" | "brutal"
-    >("spicy");
 
     const handleUploadComplete = (data: ResumeData) => {
         setResumeData(data);
         setAnalysis(null);
-        setRoast(null);
     };
 
     const analyzeResume = async () => {
@@ -85,29 +71,6 @@ export default function DashboardPage() {
         }
     };
 
-    const roastResume = async () => {
-        if (!resumeData) return;
-        setRoasting(true);
-        try {
-            const res = await fetch("/api/roast-resume", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    resumeText: resumeData.parsedText,
-                    roastLevel: selectedRoastLevel,
-                }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setRoast(data.roast);
-            }
-        } catch (error) {
-            console.error("Roast failed:", error);
-        } finally {
-            setRoasting(false);
-        }
-    };
-
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
@@ -120,12 +83,12 @@ export default function DashboardPage() {
                     <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
                         Resume{" "}
                     </span>
-                    <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-                        Dashboard
+                    <span className="bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                        Analysis
                     </span>
                 </h1>
                 <p className="mt-2 text-muted-foreground">
-                    Upload your resume and get instant AI-powered analysis
+                    Get deep insights into how ATS systems see your resume.
                 </p>
             </motion.div>
 
@@ -136,7 +99,7 @@ export default function DashboardPage() {
                     <Card className="border-white/10 bg-white/[0.03]">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
-                                <FileText className="h-5 w-5 text-orange-400" />
+                                <FileText className="h-5 w-5 text-blue-400" />
                                 Upload Resume
                             </CardTitle>
                         </CardHeader>
@@ -149,9 +112,9 @@ export default function DashboardPage() {
                     <AnimatePresence>
                         {resumeData && (
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
                                 className="space-y-4"
                             >
                                 {/* Analyze Button */}
@@ -168,51 +131,6 @@ export default function DashboardPage() {
                                                 <Target className="h-4 w-4" />
                                             )}
                                             {analyzing ? "Analyzing..." : "Analyze ATS Score"}
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-
-                                {/* Roast Section */}
-                                <Card className="border-white/10 bg-white/[0.03]">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Flame className="h-5 w-5 text-orange-400" />
-                                            Roast Level
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="flex gap-2">
-                                            {[
-                                                { level: "mild" as const, icon: ThermometerSun, label: "Mild" },
-                                                { level: "spicy" as const, icon: Flame, label: "Spicy" },
-                                                { level: "brutal" as const, icon: Zap, label: "Brutal" },
-                                            ].map(({ level, icon: Icon, label }) => (
-                                                <Button
-                                                    key={level}
-                                                    variant={selectedRoastLevel === level ? "default" : "outline"}
-                                                    size="sm"
-                                                    onClick={() => setSelectedRoastLevel(level)}
-                                                    className={`flex-1 gap-1 ${selectedRoastLevel === level
-                                                            ? "bg-orange-500/20 text-orange-400 border-orange-500/30"
-                                                            : "border-white/10"
-                                                        }`}
-                                                >
-                                                    <Icon className="h-3.5 w-3.5" />
-                                                    {label}
-                                                </Button>
-                                            ))}
-                                        </div>
-                                        <Button
-                                            onClick={roastResume}
-                                            disabled={roasting}
-                                            className="w-full gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 h-11"
-                                        >
-                                            {roasting ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            ) : (
-                                                <Flame className="h-4 w-4" />
-                                            )}
-                                            {roasting ? "Roasting..." : "🔥 Roast My Resume"}
                                         </Button>
                                     </CardContent>
                                 </Card>
@@ -254,6 +172,17 @@ export default function DashboardPage() {
                                         </CardContent>
                                     </Card>
                                 )}
+
+                                <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
+                                    <h4 className="text-sm font-semibold text-orange-400 flex items-center gap-2 mb-1">
+                                        <Zap className="h-3.5 w-3.5" />
+                                        Want a laugh?
+                                    </h4>
+                                    <p className="text-xs text-orange-300/80 mb-3">Try our AI Roaster for a brutally honest take on your resume.</p>
+                                    <Button size="sm" variant="outline" className="w-full text-xs h-8 border-orange-500/30 hover:bg-orange-500/20" onClick={() => window.location.href = "/roast"}>
+                                        Go to Roaster
+                                    </Button>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -264,12 +193,12 @@ export default function DashboardPage() {
                     {!resumeData && (
                         <Card className="border-white/10 bg-white/[0.03]">
                             <CardContent className="flex flex-col items-center justify-center py-24 text-center">
-                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/20 mb-6">
-                                    <Sparkles className="h-10 w-10 text-orange-400" />
+                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-6">
+                                    <Sparkles className="h-10 w-10 text-blue-400" />
                                 </div>
                                 <h3 className="text-xl font-semibold mb-2">Upload Your Resume to Begin</h3>
                                 <p className="text-muted-foreground max-w-md">
-                                    Drop a PDF or DOCX file to get your ATS score, AI roast, and professional feedback
+                                    Drop a PDF or DOCX file to get your ATS score and professional feedback from our AI.
                                 </p>
                             </CardContent>
                         </Card>
@@ -340,40 +269,23 @@ export default function DashboardPage() {
                                 <Separator className="bg-white/10" />
 
                                 {/* Feedback */}
-                                {analysis.strengths && (
-                                    <Card className="border-white/10 bg-white/[0.03]">
-                                        <CardHeader>
-                                            <CardTitle className="text-lg">Professional Feedback</CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <FeedbackSection
-                                                strengths={analysis.strengths || []}
-                                                weaknesses={analysis.weaknesses || []}
-                                                improvements={analysis.improvements || []}
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                )}
+                                <Card className="border-white/10 bg-white/[0.03]">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Professional Feedback</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <FeedbackSection
+                                            strengths={analysis.strengths || []}
+                                            weaknesses={analysis.weaknesses || []}
+                                            improvements={analysis.improvements || []}
+                                        />
+                                    </CardContent>
+                                </Card>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    {/* Roast Result */}
-                    <AnimatePresence>
-                        {roast && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <RoastCard
-                                    roastLevel={roast.roastLevel}
-                                    roastText={roast.roastText}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Loading States */}
+                    {/* Loading State */}
                     {analyzing && (
                         <Card className="border-blue-500/20 bg-blue-500/5">
                             <CardContent className="flex items-center justify-center py-16">
@@ -381,18 +293,6 @@ export default function DashboardPage() {
                                     <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-400 mb-4" />
                                     <p className="font-medium">Analyzing your resume...</p>
                                     <p className="text-sm text-muted-foreground">This may take a few seconds</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {roasting && (
-                        <Card className="border-orange-500/20 bg-orange-500/5">
-                            <CardContent className="flex items-center justify-center py-16">
-                                <div className="text-center">
-                                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-orange-400 mb-4" />
-                                    <p className="font-medium">Preparing your roast... 🔥</p>
-                                    <p className="text-sm text-muted-foreground">Our AI is sharpening its wit</p>
                                 </div>
                             </CardContent>
                         </Card>
