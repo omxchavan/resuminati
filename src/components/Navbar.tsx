@@ -38,7 +38,7 @@ export default function Navbar() {
 
                 {/* Desktop nav */}
                 <div className="hidden md:flex items-center gap-1">
-                    <Link href="/roast" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5 font-medium text-orange-400">
+                    <Link href="/roast" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5">
                         AI Roaster
                     </Link>
                     <Link href="/dashboard" className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-white/5">

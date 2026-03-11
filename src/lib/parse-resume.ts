@@ -1,11 +1,13 @@
 import mammoth from "mammoth";
+import { PDFParse } from "pdf-parse";
 
 export async function parsePDF(buffer: Buffer): Promise<string> {
     try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const pdfParse = require("pdf-parse");
-        const data = await pdfParse(buffer);
-        return data.text.trim();
+        const parser = new PDFParse({ data: buffer });
+        const result = await parser.getText();
+        await parser.destroy();
+        console.log(result.text);
+        return result.text.trim();
     } catch (error) {
         console.error("PDF parse error:", error);
         throw new Error("Failed to parse PDF file");
