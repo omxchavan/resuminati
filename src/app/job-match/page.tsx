@@ -71,10 +71,10 @@ export default function JobMatchPage() {
                 className="mb-8"
             >
                 <h1 className="text-3xl font-bold">
-                    <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                    <span className="text-foreground">
                         Job{" "}
                     </span>
-                    <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-yellow-600 to-amber-600 dark:from-yellow-400 dark:to-amber-400 bg-clip-text text-transparent">
                         Match Analyzer
                     </span>
                 </h1>
@@ -86,7 +86,7 @@ export default function JobMatchPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left - Inputs */}
                 <div className="space-y-6">
-                    <Card className="border-white/10 bg-white/[0.03]">
+                    <Card className="neo">
                         <CardHeader>
                             <CardTitle className="text-lg">Your Resume</CardTitle>
                         </CardHeader>
@@ -103,7 +103,7 @@ export default function JobMatchPage() {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-white/10 bg-white/[0.03]">
+                    <Card className="neo">
                         <CardHeader>
                             <CardTitle className="text-lg">Job Description</CardTitle>
                         </CardHeader>
@@ -113,7 +113,7 @@ export default function JobMatchPage() {
                                 value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
                                 rows={8}
-                                className="border-white/10 bg-white/[0.03] resize-none"
+                                className="neo-pressed bg-background resize-none border-none shadow-none"
                             />
                             {jobDescription && (
                                 <p className="mt-2 text-xs text-muted-foreground">
@@ -126,7 +126,7 @@ export default function JobMatchPage() {
                     <Button
                         onClick={matchJob}
                         disabled={matching || !resumeText || !jobDescription}
-                        className="w-full gap-2 bg-gradient-to-r from-yellow-500 to-amber-600 text-white hover:from-yellow-600 hover:to-amber-700 h-12"
+                        className="w-full gap-2 bg-gradient-to-r from-yellow-700 to-amber-800 text-white font-bold h-12 rounded-2xl"
                     >
                         {matching ? (
                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -140,7 +140,7 @@ export default function JobMatchPage() {
                 {/* Right - Results */}
                 <div className="space-y-6">
                     {!result && !matching && (
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card className="neo">
                             <CardContent className="flex flex-col items-center justify-center py-24 text-center">
                                 <FileSearch className="h-16 w-16 text-yellow-400/40 mb-4" />
                                 <h3 className="text-lg font-semibold mb-2">
@@ -174,7 +174,7 @@ export default function JobMatchPage() {
                             className="space-y-6"
                         >
                             {/* Fit Score */}
-                            <Card className="border-white/10 bg-white/[0.03]">
+                            <Card className="neo">
                                 <CardContent className="pt-6">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-semibold">Overall Fit Score</h3>
@@ -188,7 +188,7 @@ export default function JobMatchPage() {
                             </Card>
 
                             {/* Interview Probability */}
-                            <Card className="border-white/10 bg-white/[0.03]">
+                            <Card className="neo">
                                 <CardContent className="pt-6">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
@@ -204,7 +204,7 @@ export default function JobMatchPage() {
                             </Card>
 
                             {/* Matched Keywords */}
-                            <Card className="border-white/10 bg-white/[0.03]">
+                            <Card className="neo">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2 text-base">
                                         <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -226,7 +226,7 @@ export default function JobMatchPage() {
                             </Card>
 
                             {/* Missing Keywords */}
-                            <Card className="border-white/10 bg-white/[0.03]">
+                            <Card className="neo">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2 text-base">
                                         <XCircle className="h-4 w-4 text-red-400" />
@@ -249,7 +249,7 @@ export default function JobMatchPage() {
 
                             {/* Recommendations */}
                             {result.recommendations && result.recommendations.length > 0 && (
-                                <Card className="border-white/10 bg-white/[0.03]">
+                                <Card className="neo">
                                     <CardHeader>
                                         <CardTitle className="text-base">Recommendations</CardTitle>
                                     </CardHeader>

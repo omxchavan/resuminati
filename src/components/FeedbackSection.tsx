@@ -17,14 +17,14 @@ export default function FeedbackSection({
 }: FeedbackSectionProps) {
     return (
         <Tabs defaultValue="strengths" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-white/5">
-                <TabsTrigger value="strengths" className="data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">
+            <TabsList className="grid w-full grid-cols-3 bg-muted">
+                <TabsTrigger value="strengths" className="data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400">
                     Strengths
                 </TabsTrigger>
-                <TabsTrigger value="weaknesses" className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400">
+                <TabsTrigger value="weaknesses" className="data-[state=active]:bg-destructive/10 data-[state=active]:text-destructive">
                     Weaknesses
                 </TabsTrigger>
-                <TabsTrigger value="improvements" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
+                <TabsTrigger value="improvements" className="data-[state=active]:bg-french-blue/10 data-[state=active]:text-french-blue dark:data-[state=active]:text-cool-sky">
                     Improvements
                 </TabsTrigger>
             </TabsList>
@@ -37,9 +37,9 @@ export default function FeedbackSection({
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3"
+                            className="flex items-start gap-3 rounded-lg border border-emerald-500/10 bg-emerald-500/5 dark:bg-emerald-500/10 p-3"
                         >
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500 dark:text-emerald-400" />
                             <p className="text-sm text-foreground/80">{item}</p>
                         </motion.div>
                     ))}
@@ -54,9 +54,9 @@ export default function FeedbackSection({
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-red-500/20 bg-red-500/5 p-3"
+                            className="flex items-start gap-3 rounded-lg border border-destructive/10 bg-destructive/5 p-3"
                         >
-                            <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
+                            <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                             <p className="text-sm text-foreground/80">{item}</p>
                         </motion.div>
                     ))}
@@ -71,9 +71,9 @@ export default function FeedbackSection({
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-blue-500/20 bg-blue-500/5 p-3"
+                            className="flex items-start gap-3 rounded-lg border border-french-blue/10 bg-french-blue/5 dark:bg-french-blue/10 p-3"
                         >
-                            <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
+                            <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-french-blue dark:text-cool-sky" />
                             <p className="text-sm text-foreground/80">{item}</p>
                         </motion.div>
                     ))}

@@ -129,10 +129,10 @@ export default function ImprovePage() {
                 className="mb-8"
             >
                 <h1 className="text-3xl font-bold">
-                    <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                    <span className="text-foreground">
                         AI Career{" "}
                     </span>
-                    <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                         Tools
                     </span>
                 </h1>
@@ -142,7 +142,7 @@ export default function ImprovePage() {
             </motion.div>
 
             {/* Resume Upload (shared) */}
-            <Card className="border-white/10 bg-white/[0.03] mb-6">
+            <Card className="neo mb-6">
                 <CardContent className="pt-6">
                     <ResumeUploader onUploadComplete={handleUpload} compact />
                 </CardContent>
@@ -170,7 +170,7 @@ export default function ImprovePage() {
                 {/* Bullet Improver */}
                 <TabsContent value="bullet" className="mt-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card className="neo">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <PenTool className="h-5 w-5 text-purple-400" />
@@ -188,7 +188,7 @@ export default function ImprovePage() {
                                 <Button
                                     onClick={improveBullet}
                                     disabled={improving || !bulletPoint}
-                                    className="w-full gap-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:from-purple-600 hover:to-pink-700"
+                                    className="w-full gap-2 bg-gradient-to-r from-purple-700 to-pink-800 text-white font-bold h-12 rounded-2xl"
                                 >
                                     {improving ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -200,7 +200,7 @@ export default function ImprovePage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card className="neo">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <ArrowRight className="h-5 w-5 text-emerald-400" />
@@ -241,7 +241,7 @@ export default function ImprovePage() {
                 <TabsContent value="cover" className="mt-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div className="space-y-4">
-                            <Card className="border-white/10 bg-white/[0.03]">
+                            <Card className="neo">
                                 <CardHeader>
                                     <CardTitle className="text-lg">Details</CardTitle>
                                 </CardHeader>
@@ -291,7 +291,7 @@ export default function ImprovePage() {
                             </Card>
                         </div>
 
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card className="neo">
                             <CardHeader>
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-lg">Generated Letter</CardTitle>
@@ -349,7 +349,7 @@ export default function ImprovePage() {
                 {/* Interview Questions */}
                 <TabsContent value="interview" className="mt-6">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card className="neo">
                             <CardHeader>
                                 <CardTitle className="text-lg">Configure</CardTitle>
                             </CardHeader>
@@ -390,7 +390,7 @@ export default function ImprovePage() {
                             {questions ? (
                                 <div className="space-y-6">
                                     {/* Technical */}
-                                    <Card className="border-white/10 bg-white/[0.03]">
+                                    <Card className="neo">
                                         <CardHeader>
                                             <CardTitle className="text-base flex items-center gap-2">
                                                 💻 Technical Questions
@@ -426,7 +426,7 @@ export default function ImprovePage() {
                                     </Card>
 
                                     {/* Behavioral */}
-                                    <Card className="border-white/10 bg-white/[0.03]">
+                                    <Card className="neo">
                                         <CardHeader>
                                             <CardTitle className="text-base flex items-center gap-2">
                                                 🧠 Behavioral Questions
@@ -463,7 +463,7 @@ export default function ImprovePage() {
 
                                     {/* Tips */}
                                     {questions.tips && (
-                                        <Card className="border-white/10 bg-white/[0.03]">
+                                        <Card className="neo">
                                             <CardHeader>
                                                 <CardTitle className="text-base">📝 Prep Tips</CardTitle>
                                             </CardHeader>
@@ -484,7 +484,7 @@ export default function ImprovePage() {
                                     )}
                                 </div>
                             ) : (
-                                <Card className="border-white/10 bg-white/[0.03]">
+                                <Card className="neo">
                                     <CardContent className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
                                         <MessageSquare className="h-10 w-10 mb-3 opacity-30" />
                                         <p className="text-sm">Interview questions will appear here</p>

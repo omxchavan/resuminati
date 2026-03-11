@@ -34,17 +34,17 @@ export default function ATSScoreChart({
     ];
 
     const getScoreColor = (score: number) => {
-        if (score >= 80) return "text-emerald-400";
-        if (score >= 60) return "text-yellow-400";
-        if (score >= 40) return "text-orange-400";
-        return "text-red-400";
+        if (score >= 80) return "text-emerald-500 dark:text-emerald-400";
+        if (score >= 60) return "text-french-blue dark:text-cool-sky";
+        if (score >= 40) return "text-slate-500 dark:text-slate-400";
+        return "text-destructive";
     };
 
     const getGradientColors = (score: number) => {
-        if (score >= 80) return { start: "#34d399", end: "#059669" };
-        if (score >= 60) return { start: "#fbbf24", end: "#d97706" };
-        if (score >= 40) return { start: "#fb923c", end: "#ea580c" };
-        return { start: "#f87171", end: "#dc2626" };
+        if (score >= 80) return { start: "#10b981", end: "#059669" };
+        if (score >= 60) return { start: "#2a4494", end: "#5da9e9" };
+        if (score >= 40) return { start: "#64748b", end: "#475569" };
+        return { start: "#89043d", end: "#d2065f" };
     };
 
     const colors = getGradientColors(overallScore);
@@ -61,7 +61,7 @@ export default function ATSScoreChart({
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="8"
-                        className="text-white/5"
+                        className="text-muted/30"
                     />
                     <circle
                         cx="60"
@@ -73,7 +73,7 @@ export default function ATSScoreChart({
                         strokeLinecap="round"
                         strokeDasharray={`${(overallScore / 100) * 339.292} 339.292`}
                         style={{
-                            filter: `drop-shadow(0 0 8px ${colors.start}50)`,
+                            filter: `drop-shadow(0 0 4px ${colors.start}30)`,
                         }}
                     />
                 </svg>
@@ -81,7 +81,7 @@ export default function ATSScoreChart({
                     <span className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
                         {overallScore}
                     </span>
-                    <p className="text-xs text-muted-foreground">ATS Score</p>
+                    <p className="text-xs text-muted-foreground">Score</p>
                 </div>
             </div>
 
@@ -89,10 +89,10 @@ export default function ATSScoreChart({
             <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={data}>
-                        <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                        <PolarGrid stroke="currentColor" className="text-muted/30" />
                         <PolarAngleAxis
                             dataKey="category"
-                            tick={{ fill: "rgba(255,255,255,0.6)", fontSize: 12 }}
+                            tick={{ fill: "currentColor", fontSize: 11, className: "text-muted-foreground font-medium" }}
                         />
                         <PolarRadiusAxis
                             angle={90}
@@ -102,10 +102,10 @@ export default function ATSScoreChart({
                         />
                         <Tooltip
                             contentStyle={{
-                                backgroundColor: "rgba(0,0,0,0.8)",
-                                border: "1px solid rgba(255,255,255,0.1)",
-                                borderRadius: "8px",
-                                color: "#fff",
+                                backgroundColor: "hsl(var(--card))",
+                                border: "1px solid hsl(var(--border))",
+                                borderRadius: "12px",
+                                color: "hsl(var(--foreground))",
                             }}
                         />
                         <Radar
@@ -124,10 +124,10 @@ export default function ATSScoreChart({
             <div className="grid w-full grid-cols-5 gap-2">
                 {data.map((item) => (
                     <div key={item.category} className="text-center">
-                        <p className={`text-lg font-bold ${getScoreColor(item.score)}`}>
+                        <p className={`text-base font-bold ${getScoreColor(item.score)}`}>
                             {item.score}
                         </p>
-                        <p className="text-xs text-muted-foreground truncate">{item.category}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-tight font-medium truncate">{item.category}</p>
                     </div>
                 ))}
             </div>

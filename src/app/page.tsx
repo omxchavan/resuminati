@@ -20,21 +20,22 @@ import {
 } from "lucide-react";
 
 const features = [
-  { icon: Target, title: "ATS Score Analyzer", desc: "Get a detailed ATS compatibility score with category breakdowns", color: "from-blue-500 to-cyan-500" },
-  { icon: Flame, title: "AI Resume Roaster", desc: "Get your resume roasted with humor — mild, spicy, or brutal", color: "from-orange-500 to-red-500" },
-  { icon: FileSearch, title: "Professional Feedback", desc: "Serious recruiter-level analysis with strengths and improvements", color: "from-emerald-500 to-teal-500" },
-  { icon: Zap, title: "Job Description Match", desc: "Compare your resume against any job posting for fit score", color: "from-yellow-500 to-amber-500" },
-  { icon: PenTool, title: "Bullet Point Improver", desc: "Transform weak bullet points into impactful statements", color: "from-purple-500 to-pink-500" },
-  { icon: Brain, title: "Interview Prep", desc: "Get AI-generated interview questions based on your resume", color: "from-rose-500 to-pink-500" },
-  { icon: MessageSquare, title: "Cover Letter Generator", desc: "Generate personalized cover letters for any job application", color: "from-indigo-500 to-blue-500" },
-  { icon: FileText, title: "Skill Gap Detector", desc: "Identify missing skills compared to job requirements", color: "from-teal-500 to-emerald-500" },
-  { icon: BarChart3, title: "Resume Benchmark", desc: "Compare your resume against top candidates in your field", color: "from-violet-500 to-purple-500" },
-  { icon: Shield, title: "Version History", desc: "Track improvements across multiple resume versions", color: "from-slate-500 to-zinc-500" },
+  { icon: Target, title: "ATS Score Analyzer", desc: "Get a detailed ATS compatibility score with category breakdowns", color: "from-french-blue to-cool-sky" },
+  { icon: Flame, title: "AI Resume Roaster", desc: "Get your resume roasted with humor — mild, spicy, or brutal", color: "from-cool-sky to-french-blue" },
+  { icon: FileSearch, title: "Professional Feedback", desc: "Serious recruiter-level analysis with strengths and improvements", color: "from-blue-500 to-indigo-500" },
+  { icon: Zap, title: "Job Description Match", desc: "Compare your resume against any job posting for fit score", color: "from-sky-500 to-blue-600" },
+  { icon: PenTool, title: "Bullet Point Improver", desc: "Transform weak bullet points into impactful statements", color: "from-indigo-500 to-blue-700" },
+  { icon: Brain, title: "Interview Prep", desc: "Get AI-generated interview questions based on your resume", color: "from-blue-600 to-indigo-600" },
+  { icon: MessageSquare, title: "Cover Letter Generator", desc: "Generate personalized cover letters for any job application", color: "from-sky-400 to-blue-500" },
+  { icon: FileText, title: "Skill Gap Detector", desc: "Identify missing skills compared to job requirements", color: "from-blue-400 to-sky-600" },
+  { icon: BarChart3, title: "Resume Benchmark", desc: "Compare your resume against top candidates in your field", color: "from-indigo-400 to-blue-500" },
+  { icon: Shield, title: "Version History", desc: "Track improvements across multiple resume versions", color: "from-slate-400 to-blue-500" },
 ];
 
 const demoRoast = {
   level: "spicy",
-  text: `"Passionate team player with strong communication skills" — congratulations, you've just described every resume since 2010. 🔥
+  text: `"Passionate team player with strong communication skills" — congratulations, you've just described every resume since 2010. 📄
+
 
 Your "experience" section reads like a todo list. "Worked on APIs" — did you build them? Break them? Stare at them? The mystery continues.
 
@@ -43,20 +44,20 @@ But hey, at least you have a pulse and Microsoft Office skills. That puts you ah
 
 export default function LandingPage() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative min-h-screen bg-background text-foreground">
       {/* Background decorations */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/10 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-blue-500/10 to-purple-500/10 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-orange-500/5 to-red-500/5 blur-3xl" />
+        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-french-blue/20 to-cool-sky/10 blur-3xl opacity-40 dark:opacity-80" />
+        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cool-sky/20 to-french-blue/10 blur-3xl opacity-40 dark:opacity-80" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-french-blue/10 to-cool-sky/10 blur-3xl opacity-30" />
       </div>
 
       {/* Hero */}
       <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.5 }}
           className="text-center"
         >
           {/* Badge */}
@@ -64,36 +65,32 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 text-sm text-orange-400 mb-8"
+            className="inline-flex items-center gap-2 rounded-full neo-pressed px-5 py-2 text-sm font-medium text-french-blue dark:text-cool-sky mb-8"
           >
             <Sparkles className="h-4 w-4" />
             AI-Powered Career Intelligence
           </motion.div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
-              Your Resume,{" "}
-            </span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground">
+            Your Resume,
             <br />
-            <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent">
-              Roasted & Perfected
+            <span className="text-french-blue dark:text-cool-sky">
+              Analyzed & Perfected
             </span>
           </h1>
 
           {/* Subheading */}
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            Upload your resume and get instant AI analysis — ATS scoring, brutal
-            (but helpful) roasts, professional feedback, and optimization
-            suggestions. All in one place.
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed font-medium">
+            Upload your resume and get instant AI analysis — ATS scoring, professional feedback, and optimization suggestions. Build a resume that recruiters actually read.
           </p>
 
           {/* CTAs */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link href="/dashboard">
               <Button
                 size="lg"
-                className="gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-xl shadow-orange-500/25 text-base px-8 h-12"
+                className="gap-2 text-base px-8 h-12 rounded-2xl"
               >
                 <Upload className="h-5 w-5" />
                 Upload Your Resume
@@ -104,10 +101,10 @@ export default function LandingPage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="gap-2 border-white/15 hover:bg-white/5 text-base px-8 h-12"
+                className="gap-2 text-base px-8 h-12 rounded-2xl"
               >
-                <Flame className="h-5 w-5 text-orange-400" />
-                See Demo Roast
+                <BarChart3 className="h-5 w-5 text-french-blue dark:text-cool-sky" />
+                See Sample Analysis
               </Button>
             </a>
           </div>
@@ -126,7 +123,7 @@ export default function LandingPage() {
                 transition={{ delay: 0.5 + i * 0.1 }}
                 className="text-center"
               >
-                <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
                   {stat.value}
                 </p>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -146,12 +143,10 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold">
-            <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-              Everything You Need to{" "}
-            </span>
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              Land Your Dream Job
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+            Everything You Need to{" "}
+            <span className="text-french-blue dark:text-cool-sky">
+              Get Hired
             </span>
           </h2>
           <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
@@ -163,22 +158,21 @@ export default function LandingPage() {
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
+              transition={{ delay: i * 0.05, duration: 0.4 }}
+              className="group relative overflow-hidden rounded-3xl neo p-6 hover:neo-pressed transition-shadow duration-300"
             >
-              <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} shadow-lg`}>
-                <feature.icon className="h-5 w-5 text-white" />
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl neo-interactive text-french-blue dark:text-cool-sky transition-transform group-hover:scale-110">
+                <feature.icon className="h-6 w-6" />
               </div>
-              <h3 className="font-semibold text-foreground text-sm">
+              <h3 className="font-bold text-foreground text-sm mb-2">
                 {feature.title}
               </h3>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed text-pretty font-medium">
                 {feature.desc}
               </p>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
             </motion.div>
           ))}
         </div>
@@ -192,13 +186,11 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold">
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              Sample Roast 🔥
-            </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+            Professional Feedback
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Here&apos;s what our AI thinks of generic resumes
+            Actionable insights to make your resume stand out
           </p>
         </motion.div>
 
@@ -208,20 +200,22 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="mx-auto max-w-2xl"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-orange-500/30 bg-gradient-to-br from-orange-500/10 to-red-500/10 p-8">
-            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-3xl neo p-8 sm:p-10">
+            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full neo-pressed opacity-50 blur-xl" />
             <div className="relative">
-              <div className="flex items-center gap-2 mb-4">
-                <Flame className="h-5 w-5 text-orange-400" />
-                <span className="text-sm font-medium text-orange-400">
-                  🌶️ Spicy Level
+              <div className="flex items-center gap-3 mb-6 neo-pressed inline-flex px-4 py-2 rounded-xl w-auto">
+                <Brain className="h-5 w-5 text-french-blue dark:text-cool-sky" />
+                <span className="text-sm font-bold text-french-blue dark:text-cool-sky uppercase tracking-wider">
+                  AI Assessment
                 </span>
               </div>
-              {demoRoast.text.split("\n").map((line, i) => (
-                <p key={i} className="text-foreground/80 text-sm leading-relaxed mb-3 last:mb-0">
-                  {line}
-                </p>
-              ))}
+              <div className="space-y-4">
+                {demoRoast.text.split("\n").map((line, i) => (
+                  <p key={i} className="text-muted-foreground text-base leading-relaxed font-medium">
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         </motion.div>
@@ -233,38 +227,36 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="mt-16 text-center"
         >
-          <h3 className="text-2xl font-bold mb-4">
-            Ready to get{" "}
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              roasted
-            </span>
-            ?
+          <h3 className="text-2xl font-bold mb-4 text-foreground">
+            Ready to optimize your career?
           </h3>
           <Link href="/dashboard">
             <Button
               size="lg"
-              className="gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-xl shadow-orange-500/25 px-8 h-12"
+              className="gap-2 text-base px-8 h-14 rounded-2xl font-bold"
             >
               <Upload className="h-5 w-5" />
               Upload Your Resume Now
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
         </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8">
+      <footer className="border-t border-border py-8 bg-card">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Flame className="h-5 w-5 text-orange-400" />
-              <span className="font-semibold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl neo-interactive">
+                <Flame className="h-5 w-5 text-french-blue dark:text-cool-sky" />
+              </div>
+              <span className="text-lg font-bold text-foreground">
                 RoastMyResume AI
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2025 RoastMyResume AI. Built with 🔥 and AI.
+              © 2025 RoastMyResume AI. Built with professional precision.
             </p>
           </div>
         </div>

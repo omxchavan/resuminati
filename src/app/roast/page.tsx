@@ -70,11 +70,11 @@ export default function RoastPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-12 text-center"
             >
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 shadow-xl shadow-orange-500/20">
-                    <Flame className="h-8 w-8 text-white" />
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl neo-interactive">
+                    <Flame className="h-8 w-8 text-french-blue dark:text-cool-sky" />
                 </div>
                 <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                    <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
                         AI Resume Roaster
                     </span>
                 </h1>
@@ -86,10 +86,10 @@ export default function RoastPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Left Column - Controls */}
                 <div className="lg:col-span-4 space-y-6">
-                    <Card className="border-white/10 bg-white/[0.03] backdrop-blur-sm">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
-                                <FileText className="h-5 w-5 text-orange-400" />
+                                <FileText className="h-5 w-5 text-french-blue dark:text-cool-sky" />
                                 1. Upload Resume
                             </CardTitle>
                         </CardHeader>
@@ -106,10 +106,10 @@ export default function RoastPage() {
                                 exit={{ opacity: 0, x: 20 }}
                                 className="space-y-6"
                             >
-                                <Card className="border-white/10 bg-white/[0.03] backdrop-blur-sm">
+                                <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Flame className="h-5 w-5 text-orange-400" />
+                                            <Flame className="h-5 w-5 text-dark-amaranth dark:text-cool-sky" />
                                             2. Choose Intensity
                                         </CardTitle>
                                     </CardHeader>
@@ -122,15 +122,16 @@ export default function RoastPage() {
                                             ].map(({ level, icon: Icon, label }) => (
                                                 <Button
                                                     key={level}
-                                                    variant={selectedRoastLevel === level ? "default" : "outline"}
+                                                    variant="default"
                                                     onClick={() => setSelectedRoastLevel(level)}
-                                                    className={`h-20 flex-col gap-2 ${selectedRoastLevel === level
-                                                        ? "bg-orange-500/20 text-orange-400 border-orange-500/30 hover:bg-orange-500/30"
-                                                        : "border-white/10 hover:bg-white/5"
-                                                        }`}
+                                                    className={`h-24 flex-col gap-3 transition-all rounded-2xl ${
+                                                        selectedRoastLevel === level
+                                                        ? "neo-pressed text-french-blue dark:text-cool-sky border-transparent"
+                                                        : "neo-interactive text-muted-foreground hover:neo-pressed bg-transparent"
+                                                    }`}
                                                 >
-                                                    <Icon className="h-5 w-5" />
-                                                    <span className="text-xs font-semibold uppercase tracking-wider">{label}</span>
+                                                    <Icon className="h-6 w-6" />
+                                                    <span className="text-xs font-bold uppercase tracking-wider">{label}</span>
                                                 </Button>
                                             ))}
                                         </div>
@@ -138,7 +139,7 @@ export default function RoastPage() {
                                             onClick={roastResume}
                                             disabled={roasting}
                                             size="lg"
-                                            className="w-full gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 h-14 text-lg font-bold shadow-lg shadow-orange-500/25"
+                                            className="w-full gap-2 h-14 text-lg font-bold rounded-2xl"
                                         >
                                             {roasting ? (
                                                 <Loader2 className="h-6 w-6 animate-spin" />
@@ -157,10 +158,10 @@ export default function RoastPage() {
                 {/* Right Column - Result */}
                 <div className="lg:col-span-8">
                     {!resumeData && (
-                        <Card className="border-white/10 bg-white/[0.03] border-dashed h-full min-h-[400px] flex items-center justify-center">
+                        <Card className="neo-pressed h-full min-h-[400px] flex items-center justify-center">
                             <CardContent className="text-center py-12">
-                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/5 mx-auto mb-6">
-                                    <Sparkles className="h-10 w-10 text-orange-400/50" />
+                                <div className="flex h-24 w-24 items-center justify-center rounded-full neo-sm mx-auto mb-8">
+                                    <Sparkles className="h-10 w-10 text-french-blue/50" />
                                 </div>
                                 <h3 className="text-xl font-semibold opacity-50">Waiting for your resume...</h3>
                                 <p className="text-muted-foreground mt-2 max-w-xs mx-auto">
@@ -179,17 +180,17 @@ export default function RoastPage() {
                                 exit={{ opacity: 0, scale: 1.05 }}
                                 className="h-full min-h-[400px]"
                             >
-                                <Card className="border-orange-500/20 bg-orange-500/5 h-full flex items-center justify-center">
+                                <Card className="neo-pressed h-full flex items-center justify-center">
                                     <CardContent className="text-center">
                                         <div className="relative mx-auto mb-6 h-20 w-20">
-                                            <Flame className="h-20 w-20 text-orange-500 animate-pulse" />
+                                            <Flame className="h-20 w-20 text-french-blue dark:text-cool-sky animate-pulse" />
                                             <motion.div
                                                 animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
                                                 transition={{ duration: 1, repeat: Infinity }}
-                                                className="absolute inset-0 bg-orange-500 blur-2xl rounded-full"
+                                                className="absolute inset-0 bg-french-blue/20 dark:bg-cool-sky/20 blur-2xl rounded-full"
                                             />
                                         </div>
-                                        <h3 className="text-2xl font-bold text-orange-400">Sharpening the logic...</h3>
+                                        <h3 className="text-2xl font-bold text-french-blue dark:text-cool-sky">Sharpening the logic...</h3>
                                         <p className="text-muted-foreground mt-2">Preparing a {selectedRoastLevel} roast for your resume.</p>
                                     </CardContent>
                                 </Card>
@@ -205,12 +206,12 @@ export default function RoastPage() {
                                     roastText={roast.roastText}
                                 />
 
-                                <div className="mt-8 p-6 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
+                                <div className="mt-8 p-8 rounded-3xl neo-pressed flex flex-col sm:flex-row gap-6 items-center justify-between">
                                     <div>
-                                        <h4 className="font-semibold text-blue-400">Want serious feedback?</h4>
-                                        <p className="text-sm text-blue-300/80">Check out our ATS Analysis for professional improvements.</p>
+                                        <h4 className="font-bold text-french-blue dark:text-cool-sky text-lg">Want serious feedback?</h4>
+                                        <p className="text-base text-muted-foreground font-medium mt-1">Check out our ATS Analysis for professional improvements.</p>
                                     </div>
-                                    <Button variant="outline" className="border-blue-500/30 hover:bg-blue-500/20" onClick={() => window.location.href = "/dashboard"}>
+                                    <Button variant="outline" className="h-12 px-6 rounded-2xl" onClick={() => window.location.href = "/dashboard"}>
                                         Go to Dashboard
                                     </Button>
                                 </div>

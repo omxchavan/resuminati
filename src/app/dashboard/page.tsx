@@ -80,10 +80,10 @@ export default function DashboardPage() {
                 className="mb-8"
             >
                 <h1 className="text-3xl font-bold">
-                    <span className="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
                         Resume{" "}
                     </span>
-                    <span className="bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                    <span className="bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
                         Analysis
                     </span>
                 </h1>
@@ -96,10 +96,10 @@ export default function DashboardPage() {
                 {/* Left Column - Upload & Actions */}
                 <div className="lg:col-span-1 space-y-6">
                     {/* Upload Card */}
-                    <Card className="border-white/10 bg-white/[0.03]">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
-                                <FileText className="h-5 w-5 text-blue-400" />
+                                <FileText className="h-5 w-5 text-french-blue dark:text-cool-sky" />
                                 Upload Resume
                             </CardTitle>
                         </CardHeader>
@@ -118,17 +118,17 @@ export default function DashboardPage() {
                                 className="space-y-4"
                             >
                                 {/* Analyze Button */}
-                                <Card className="border-white/10 bg-white/[0.03]">
+                                <Card>
                                     <CardContent className="pt-6">
                                         <Button
                                             onClick={analyzeResume}
                                             disabled={analyzing}
-                                            className="w-full gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:from-blue-600 hover:to-cyan-700 h-11"
+                                            className="w-full gap-2 text-french-blue dark:text-cool-sky font-bold h-14 rounded-2xl"
                                         >
                                             {analyzing ? (
-                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                <Loader2 className="h-5 w-5 animate-spin" />
                                             ) : (
-                                                <Target className="h-4 w-4" />
+                                                <Target className="h-5 w-5" />
                                             )}
                                             {analyzing ? "Analyzing..." : "Analyze ATS Score"}
                                         </Button>
@@ -137,10 +137,10 @@ export default function DashboardPage() {
 
                                 {/* Quick Stats */}
                                 {analysis && (
-                                    <Card className="border-white/10 bg-white/[0.03]">
+                                    <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2 text-lg">
-                                                <BarChart3 className="h-5 w-5 text-blue-400" />
+                                                <BarChart3 className="h-5 w-5 text-french-blue dark:text-cool-sky" />
                                                 Quick Stats
                                             </CardTitle>
                                         </CardHeader>
@@ -161,10 +161,10 @@ export default function DashboardPage() {
                                                 <span className="text-sm text-muted-foreground">Status</span>
                                                 <Badge className={
                                                     analysis.atsScore >= 80
-                                                        ? "bg-emerald-500/20 text-emerald-400"
+                                                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                                                         : analysis.atsScore >= 60
-                                                            ? "bg-yellow-500/20 text-yellow-400"
-                                                            : "bg-red-500/20 text-red-400"
+                                                            ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                                                            : "bg-red-500/10 text-red-600 dark:text-red-400"
                                                 }>
                                                     {analysis.atsScore >= 80 ? "Strong" : analysis.atsScore >= 60 ? "Needs Work" : "Weak"}
                                                 </Badge>
@@ -173,14 +173,14 @@ export default function DashboardPage() {
                                     </Card>
                                 )}
 
-                                <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
-                                    <h4 className="text-sm font-semibold text-orange-400 flex items-center gap-2 mb-1">
-                                        <Zap className="h-3.5 w-3.5" />
-                                        Want a laugh?
+                                <div className="p-5 rounded-3xl neo-pressed bg-background">
+                                    <h4 className="text-sm font-bold text-french-blue dark:text-cool-sky flex items-center gap-2 mb-2">
+                                        <Sparkles className="h-4 w-4" />
+                                        Advanced Tools
                                     </h4>
-                                    <p className="text-xs text-orange-300/80 mb-3">Try our AI Roaster for a brutally honest take on your resume.</p>
-                                    <Button size="sm" variant="outline" className="w-full text-xs h-8 border-orange-500/30 hover:bg-orange-500/20" onClick={() => window.location.href = "/roast"}>
-                                        Go to Roaster
+                                    <p className="text-sm text-muted-foreground mb-4 font-medium">Try our AI Roaster for a deeper take on your resume.</p>
+                                    <Button size="sm" variant="outline" className="w-full text-sm h-10 rounded-xl" onClick={() => window.location.href = "/roast"}>
+                                        Open Roaster
                                     </Button>
                                 </div>
                             </motion.div>
@@ -191,10 +191,10 @@ export default function DashboardPage() {
                 {/* Right Column - Results */}
                 <div className="lg:col-span-2 space-y-6">
                     {!resumeData && (
-                        <Card className="border-white/10 bg-white/[0.03]">
+                        <Card>
                             <CardContent className="flex flex-col items-center justify-center py-24 text-center">
-                                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mb-6">
-                                    <Sparkles className="h-10 w-10 text-blue-400" />
+                                <div className="flex h-24 w-24 items-center justify-center rounded-full neo-pressed mb-6">
+                                    <Sparkles className="h-10 w-10 text-french-blue dark:text-cool-sky" />
                                 </div>
                                 <h3 className="text-xl font-semibold mb-2">Upload Your Resume to Begin</h3>
                                 <p className="text-muted-foreground max-w-md">
@@ -212,14 +212,14 @@ export default function DashboardPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="space-y-6"
                             >
-                                <Card className="border-white/10 bg-white/[0.03]">
+                                <Card>
                                     <CardHeader>
                                         <div className="flex items-center justify-between">
                                             <CardTitle className="flex items-center gap-2">
-                                                <Target className="h-5 w-5 text-blue-400" />
+                                                <Target className="h-5 w-5 text-french-blue dark:text-cool-sky" />
                                                 ATS Score Analysis
                                             </CardTitle>
-                                            <Badge className="bg-blue-500/20 text-blue-400 border-0">
+                                            <Badge>
                                                 <TrendingUp className="mr-1 h-3 w-3" />
                                                 Complete
                                             </Badge>
@@ -241,10 +241,10 @@ export default function DashboardPage() {
 
                                 {/* Suggestions */}
                                 {analysis.suggestions && analysis.suggestions.length > 0 && (
-                                    <Card className="border-white/10 bg-white/[0.03]">
+                                    <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2 text-lg">
-                                                <Sparkles className="h-5 w-5 text-amber-400" />
+                                                <Sparkles className="h-5 w-5 text-cool-sky" />
                                                 AI Suggestions
                                             </CardTitle>
                                         </CardHeader>
@@ -253,12 +253,12 @@ export default function DashboardPage() {
                                                 {analysis.suggestions.map((suggestion, i) => (
                                                     <div
                                                         key={i}
-                                                        className="flex items-start gap-3 rounded-lg border border-amber-500/10 bg-amber-500/5 p-3"
+                                                        className="flex items-start gap-4 rounded-2xl neo-pressed p-4"
                                                     >
-                                                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-xs text-amber-400 font-medium">
+                                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full neo-sm text-sm text-french-blue dark:text-cool-sky font-bold">
                                                             {i + 1}
                                                         </span>
-                                                        <p className="text-sm text-foreground/80">{suggestion}</p>
+                                                        <p className="text-[15px] font-medium text-foreground/80 leading-relaxed">{suggestion}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -266,10 +266,10 @@ export default function DashboardPage() {
                                     </Card>
                                 )}
 
-                                <Separator className="bg-white/10" />
+                                <Separator />
 
                                 {/* Feedback */}
-                                <Card className="border-white/10 bg-white/[0.03]">
+                                <Card>
                                     <CardHeader>
                                         <CardTitle className="text-lg">Professional Feedback</CardTitle>
                                     </CardHeader>
@@ -287,10 +287,10 @@ export default function DashboardPage() {
 
                     {/* Loading State */}
                     {analyzing && (
-                        <Card className="border-blue-500/20 bg-blue-500/5">
+                        <Card className="neo-pressed">
                             <CardContent className="flex items-center justify-center py-16">
                                 <div className="text-center">
-                                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-400 mb-4" />
+                                    <Loader2 className="mx-auto h-8 w-8 animate-spin text-french-blue dark:text-cool-sky mb-4" />
                                     <p className="font-medium">Analyzing your resume...</p>
                                     <p className="text-sm text-muted-foreground">This may take a few seconds</p>
                                 </div>
