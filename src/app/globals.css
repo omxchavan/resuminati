@@ -49,6 +49,16 @@
   --color-french-blue: #2a4494;
   --color-cool-sky: #5da9e9;
   --color-dark-amaranth: #89043d;
+
+  @keyframes aurora {
+    from {
+      background-position: 50% 50%, 50% 50%;
+    }
+    to {
+      background-position: 350% 50%, 350% 50%;
+    }
+  }
+  --animate-aurora: aurora 60s linear infinite;
 }
 
 :root {
@@ -81,9 +91,16 @@
   --sidebar-border: #cdd8e4;
   --sidebar-ring: #2a4494;
 
-  /* Neomorphic Variables */
   --shadow-light: rgba(255, 255, 255, 0.5);
   --shadow-dark: rgba(0, 0, 0, 0.12);
+
+  --white: #ffffff;
+  --black: #000000;
+  --blue-500: #3b82f6;
+  --blue-300: #93c5fd;
+  --blue-400: #60a5fa;
+  --indigo-300: #a5b4fc;
+  --violet-200: #ddd6fe;
 }
 
 .dark {

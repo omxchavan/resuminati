@@ -18,18 +18,19 @@ import {
   Sparkles,
   Upload,
 } from "lucide-react";
+import { BackgroundBeams } from "@/components/BackgroundBeams";
 
 const features = [
-  { icon: Target, title: "ATS Score Analyzer", desc: "Get a detailed ATS compatibility score with category breakdowns", color: "from-french-blue to-cool-sky" },
-  { icon: Flame, title: "AI Resume Roaster", desc: "Get your resume roasted with humor — mild, spicy, or brutal", color: "from-cool-sky to-french-blue" },
-  { icon: FileSearch, title: "Professional Feedback", desc: "Serious recruiter-level analysis with strengths and improvements", color: "from-blue-500 to-indigo-500" },
-  { icon: Zap, title: "Job Description Match", desc: "Compare your resume against any job posting for fit score", color: "from-sky-500 to-blue-600" },
-  { icon: PenTool, title: "Bullet Point Improver", desc: "Transform weak bullet points into impactful statements", color: "from-indigo-500 to-blue-700" },
-  { icon: Brain, title: "Interview Prep", desc: "Get AI-generated interview questions based on your resume", color: "from-blue-600 to-indigo-600" },
-  { icon: MessageSquare, title: "Cover Letter Generator", desc: "Generate personalized cover letters for any job application", color: "from-sky-400 to-blue-500" },
-  { icon: FileText, title: "Skill Gap Detector", desc: "Identify missing skills compared to job requirements", color: "from-blue-400 to-sky-600" },
-  { icon: BarChart3, title: "Resume Benchmark", desc: "Compare your resume against top candidates in your field", color: "from-indigo-400 to-blue-500" },
-  { icon: Shield, title: "Version History", desc: "Track improvements across multiple resume versions", color: "from-slate-400 to-blue-500" },
+  { icon: Target, title: "ATS Score Analyzer", desc: "Get a detailed ATS compatibility score with category breakdowns", color: "from-blue-500 to-indigo-500" },
+  { icon: Flame, title: "AI Resume Roaster", desc: "Get your resume roasted with humor — mild, spicy, or brutal", color: "from-indigo-500 to-purple-500" },
+  { icon: FileSearch, title: "Professional Feedback", desc: "Serious recruiter-level analysis with strengths and improvements", color: "from-purple-500 to-pink-500" },
+  { icon: Zap, title: "Job Description Match", desc: "Compare your resume against any job posting for fit score", color: "from-blue-600 to-cyan-500" },
+  { icon: PenTool, title: "Bullet Point Improver", desc: "Transform weak bullet points into impactful statements", color: "from-violet-500 to-purple-600" },
+  { icon: Brain, title: "Interview Prep", desc: "Get AI-generated interview questions based on your resume", color: "from-blue-500 to-sky-500" },
+  { icon: MessageSquare, title: "Cover Letter Generator", desc: "Generate personalized cover letters for any job application", color: "from-indigo-500 to-blue-500" },
+  { icon: FileText, title: "Skill Gap Detector", desc: "Identify missing skills compared to job requirements", color: "from-cyan-500 to-blue-500" },
+  { icon: BarChart3, title: "Resume Benchmark", desc: "Compare your resume against top candidates in your field", color: "from-purple-500 to-indigo-500" },
+  { icon: Shield, title: "Version History", desc: "Track improvements across multiple resume versions", color: "from-blue-500 to-purple-500" },
 ];
 
 const demoRoast = {
@@ -44,13 +45,9 @@ But hey, at least you have a pulse and Microsoft Office skills. That puts you ah
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
-      {/* Background decorations */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-french-blue/20 to-cool-sky/10 blur-3xl opacity-40 dark:hidden" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cool-sky/20 to-french-blue/10 blur-3xl opacity-40 dark:hidden" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-french-blue/10 to-cool-sky/10 blur-3xl opacity-30 dark:hidden" />
-      </div>
+    <div className="relative min-h-screen bg-background overflow-hidden">
+      <BackgroundBeams />
+      <div className="relative z-10 w-full">
 
       {/* Hero */}
       <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-32">
@@ -244,10 +241,10 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-card">
+      <footer className="border-t border-border py-8 bg-card relative z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl neo-interactive">
                 <Flame className="h-5 w-5 text-french-blue dark:text-cool-sky" />
               </div>
@@ -261,6 +258,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
     </div>
   );
 }
