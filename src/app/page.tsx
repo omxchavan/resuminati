@@ -47,9 +47,9 @@ export default function LandingPage() {
     <div className="relative min-h-screen bg-background text-foreground">
       {/* Background decorations */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-french-blue/20 to-cool-sky/10 blur-3xl opacity-40 dark:opacity-80" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cool-sky/20 to-french-blue/10 blur-3xl opacity-40 dark:opacity-80" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-french-blue/10 to-cool-sky/10 blur-3xl opacity-30" />
+        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-french-blue/20 to-cool-sky/10 blur-3xl opacity-40 dark:hidden" />
+        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cool-sky/20 to-french-blue/10 blur-3xl opacity-40 dark:hidden" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-gradient-to-r from-french-blue/10 to-cool-sky/10 blur-3xl opacity-30 dark:hidden" />
       </div>
 
       {/* Hero */}

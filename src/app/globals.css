@@ -87,43 +87,43 @@
 }
 
 .dark {
-  --background: #000000; /* True Black Neomorphic Base */
+  --background: #080808; /* Off-black for neomorphism contrast */
   --foreground: #f8fafc;
-  --card: #000000;
-  --popover: #000000;
+  --card: #080808;
+  --popover: #080808;
   --popover-foreground: #f8fafc;
   --primary: #5da9e9;
   --primary-foreground: #000000;
   --secondary: #2a4494;
   --secondary-foreground: #f8fafc;
-  --muted: #0a0a0a;
+  --muted: #0f172a;
   --muted-foreground: #94a3b8;
-  --accent: #0f172a;
+  --accent: #111b2b;
   --accent-foreground: #5da9e9;
   --destructive: #d2065f;
-  --border: #141414;
-  --input: #000000;
+  --border: #1a1a1a;
+  --input: #080808;
   --ring: #5da9e9;
 
   --sidebar: #050505;
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #5da9e9;
   --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #0a0a0a;
+  --sidebar-accent: #0f172a;
   --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #141414;
+  --sidebar-border: #1a1a1a;
   --sidebar-ring: #5da9e9;
 
-  /* Neomorphic Variables for Black */
-  --shadow-light: rgba(255, 255, 255, 0.04);
-  --shadow-dark: rgba(0, 0, 0, 0.6);
+  /* Neomorphic Variables for Black (Stronger) */
+  --shadow-light: rgba(255, 255, 255, 0.05); /* Increased highlight */
+  --shadow-dark: rgba(0, 0, 0, 0.7); /* Deepened shadow */
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  body, html {
     @apply bg-background text-foreground transition-colors duration-300;
   }
 }
@@ -172,5 +172,6 @@
 @utility neo-glass {
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05), inset 1px 1px 1px rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
-  background: rgba(var(--background), 0.7);
+  background-color: var(--background);
+  opacity: 0.7;
 }
