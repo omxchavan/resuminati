@@ -25,17 +25,25 @@ interface ResumeData {
     parsedText: string;
 }
 
+interface ScoreDetail {
+    score: number;
+    avg: number;
+    top10: number;
+}
+
 interface AnalysisData {
     atsScore: number;
-    formatting: number;
-    keywords: number;
-    impact: number;
-    readability: number;
-    skills: number;
+    formatting: ScoreDetail;
+    keywords: ScoreDetail;
+    impact: ScoreDetail;
+    readability: ScoreDetail;
+    skills: ScoreDetail;
     suggestions: string[];
     strengths: string[];
     weaknesses: string[];
     improvements: string[];
+    percentile?: number;
+    impactMetrics?: string[];
 }
 
 import { useResume } from "@/components/ResumeProvider";
@@ -160,15 +168,22 @@ export default function DashboardPage() {
                                             </div>
                                             <div className="flex flex-col gap-2 p-3 rounded-2xl neo-pressed bg-background/50">
                                                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">Impact Level</span>
-                                                <Badge className={`w-fit px-4 py-1 text-sm font-bold rounded-lg ${
-                                                    analysis.atsScore >= 80
-                                                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                        : analysis.atsScore >= 60
-                                                            ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
-                                                            : "bg-red-500/10 text-red-600 dark:text-red-400"
-                                                }`}>
-                                                    {analysis.atsScore >= 80 ? "Premium" : analysis.atsScore >= 60 ? "Moderate" : "Needs Polish"}
-                                                </Badge>
+                                                <div className="flex items-center justify-between">
+                                                    <Badge className={`px-4 py-1 text-sm font-bold rounded-lg ${
+                                                        analysis.atsScore >= 80
+                                                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                                            : analysis.atsScore >= 60
+                                                                ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                                                                : "bg-red-500/10 text-red-600 dark:text-red-400"
+                                                    }`}>
+                                                        {analysis.atsScore >= 80 ? "Premium" : analysis.atsScore >= 60 ? "Moderate" : "Needs Polish"}
+                                                    </Badge>
+                                                    {analysis.percentile && (
+                                                        <span className="text-xs font-bold text-french-blue dark:text-cool-sky">
+                                                            Top {100 - analysis.percentile}%
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -249,31 +264,60 @@ export default function DashboardPage() {
                                     </CardContent>
                                 </Card>
 
-                                {/* Suggestions */}
-                                {analysis.suggestions && analysis.suggestions.length > 0 && (
-                                    <Card className="neo">
-                                        <CardHeader className="pb-4">
-                                            <CardTitle className="flex items-center gap-3 text-xl font-bold">
-                                                <Sparkles className="h-6 w-6 text-cool-sky" />
-                                                Optimization Roadmap
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                                                {analysis.suggestions.map((suggestion, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className="flex items-start gap-5 rounded-3xl neo-pressed p-6 group transition-all"
-                                                    >
-                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl neo-sm text-lg text-french-blue dark:text-cool-sky font-bold">
-                                                            {i + 1}
+                                 {/* Optimization Roadmap & Quantified Impact */}
+                                 {analysis.suggestions && analysis.suggestions.length > 0 && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <Card className="neo h-full">
+                                            <CardHeader className="pb-4">
+                                                <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                                                    <Sparkles className="h-6 w-6 text-cool-sky" />
+                                                    Optimization Roadmap
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="space-y-4">
+                                                    {analysis.suggestions.map((suggestion, i) => (
+                                                        <div
+                                                            key={i}
+                                                            className="flex items-start gap-4 rounded-2xl neo-pressed p-4 group transition-all"
+                                                        >
+                                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl neo-sm text-sm text-french-blue dark:text-cool-sky font-bold">
+                                                                {i + 1}
+                                                            </div>
+                                                            <p className="text-sm font-medium text-foreground/90 leading-relaxed">{suggestion}</p>
                                                         </div>
-                                                        <p className="text-lg font-medium text-foreground/90 leading-relaxed pt-1">{suggestion}</p>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        {/* Impact Metrics */}
+                                        {analysis.impactMetrics && analysis.impactMetrics.length > 0 && (
+                                            <Card className="neo h-full">
+                                                <CardHeader className="pb-4">
+                                                    <CardTitle className="flex items-center gap-3 text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                                                        <TrendingUp className="h-6 w-6" />
+                                                        Quantified Impact
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <div className="space-y-4">
+                                                        {analysis.impactMetrics.map((metric, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="flex items-start gap-4 rounded-2xl neo-pressed p-4 bg-emerald-500/5 group transition-all"
+                                                            >
+                                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl neo-sm text-emerald-500 font-bold">
+                                                                    <Zap className="h-4 w-4" />
+                                                                </div>
+                                                                <p className="text-sm font-medium text-foreground/90 leading-relaxed">{metric}</p>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                ))}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                                                </CardContent>
+                                            </Card>
+                                        )}
+                                    </div>
                                 )}
 
                                 <Separator className="opacity-10" />

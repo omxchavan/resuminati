@@ -1,17 +1,19 @@
-export const ATS_ANALYSIS_PROMPT = `You are an expert ATS (Applicant Tracking System) analyzer. Analyze the given resume text and provide a detailed scoring breakdown.
+export const ATS_ANALYSIS_PROMPT = `You are an expert ATS (Applicant Tracking System) and Career Benchmarking analyzer. Analyze the given resume text and provide a detailed scoring breakdown comparing it against industry standards.
 
 Return a JSON object with this exact structure:
 {
   "atsScore": <overall score 0-100>,
-  "formatting": <score 0-100>,
-  "keywords": <score 0-100>,
-  "impact": <score 0-100>,
-  "readability": <score 0-100>,
-  "skills": <score 0-100>,
+  "formatting": { "score": <0-100>, "avg": <typical market avg 0-100>, "top10": <top candidates 0-100> },
+  "keywords": { "score": <0-100>, "avg": <typical market avg 0-100>, "top10": <top candidates 0-100> },
+  "impact": { "score": <0-100>, "avg": <typical market avg 0-100>, "top10": <top candidates 0-100> },
+  "readability": { "score": <0-100>, "avg": <typical market avg 0-100>, "top10": <top candidates 0-100> },
+  "skills": { "score": <0-100>, "avg": <typical market avg 0-100>, "top10": <top candidates 0-100> },
   "suggestions": [<array of 5-8 specific improvement suggestions>],
   "strengths": [<array of 3-5 resume strengths>],
   "weaknesses": [<array of 3-5 resume weaknesses>],
-  "improvements": [<array of 5-8 actionable improvements>]
+  "improvements": [<array of 5-8 actionable improvements>],
+  "percentile": <calculated percentile ranking among industry peers 0-100>,
+  "impactMetrics": [<3 specific quantifiable metrics found or missing from the resume>]
 }
 
 Score criteria:
@@ -20,6 +22,10 @@ Score criteria:
 - impact: Quantifiable achievements, metrics, results
 - readability: Clarity, conciseness, grammar
 - skills: Technical and soft skills coverage
+
+Benchmarking Data (Research and synthesize realistically based on the resume's field):
+- avg: The average score for this specific role/experience level.
+- top10: The score of the most competitive candidates (top decile) in this field.
 
 Be specific and actionable in suggestions. Reference exact parts of the resume when possible.`;
 
