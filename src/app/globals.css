@@ -104,36 +104,36 @@
 }
 
 .dark {
-  --background: #080808; /* Off-black for neomorphism contrast */
+  --background: #0d1117; /* Slightly lighter for better neomorphism visibility */
   --foreground: #f8fafc;
-  --card: #080808;
-  --popover: #080808;
+  --card: #0d1117;
+  --popover: #0d1117;
   --popover-foreground: #f8fafc;
   --primary: #5da9e9;
   --primary-foreground: #000000;
   --secondary: #2a4494;
   --secondary-foreground: #f8fafc;
-  --muted: #0f172a;
+  --muted: #161b22;
   --muted-foreground: #94a3b8;
-  --accent: #111b2b;
+  --accent: #1f2937;
   --accent-foreground: #5da9e9;
   --destructive: #d2065f;
-  --border: #1a1a1a;
-  --input: #080808;
+  --border: #30363d;
+  --input: #0d1117;
   --ring: #5da9e9;
 
-  --sidebar: #050505;
+  --sidebar: #0d1117;
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #5da9e9;
   --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #0f172a;
+  --sidebar-accent: #161b22;
   --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #1a1a1a;
+  --sidebar-border: #30363d;
   --sidebar-ring: #5da9e9;
 
-  /* Neomorphic Variables for Black (Stronger) */
-  --shadow-light: rgba(255, 255, 255, 0.05); /* Increased highlight */
-  --shadow-dark: rgba(0, 0, 0, 0.7); /* Deepened shadow */
+  /* Neomorphic Variables for Dark Mode (More pronounced) */
+  --shadow-light: rgba(255, 255, 255, 0.08); /* Brighter highlight */
+  --shadow-dark: rgba(0, 0, 0, 0.8); /* Deeper shadow */
 }
 
 @layer base {
@@ -148,12 +148,12 @@
 /* Custom Utilities for Neomorphism */
 @utility neo {
   box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
-  background: var(--background);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--background), white 2%), color-mix(in srgb, var(--background), black 2%));
 }
 
 @utility neo-sm {
   box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-  background: var(--background);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--background), white 1%), color-mix(in srgb, var(--background), black 1%));
 }
 
 @utility neo-pressed {
@@ -168,21 +168,23 @@
 
 @utility neo-interactive {
   box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
-  background: var(--background);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--background), white 2%), color-mix(in srgb, var(--background), black 2%));
   transition: all 0.2s ease-in-out;
 }
 
 @utility neo-interactive-hover {
   &:hover:not(:disabled) {
     box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
-    transform: translateY(2px);
+    transform: translateY(-1px); /* Sublte lift instead of sink */
+    background: linear-gradient(145deg, color-mix(in srgb, var(--background), white 4%), color-mix(in srgb, var(--background), black 1%));
   }
 }
 
 @utility neo-interactive-active {
   &:active:not(:disabled) {
     box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-    transform: translateY(4px);
+    transform: translateY(2px);
+    background: var(--background);
   }
 }
 

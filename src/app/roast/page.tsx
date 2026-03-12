@@ -11,44 +11,36 @@ import {
     Loader2,
     FileText,
     Zap,
-    ThermometerSun,
     Sparkles,
+    Target,
 } from "lucide-react";
+import { useResume } from "@/components/ResumeProvider";
 
-interface ResumeData {
-    id: string;
-    fileName: string;
-    parsedText: string;
-}
-
-interface RoastData {
+interface RoastResponse {
     roastLevel: "mild" | "spicy" | "brutal";
     roastText: string;
 }
 
 export default function RoastPage() {
-    const [resumeData, setResumeData] = useState<ResumeData | null>(null);
-    const [roast, setRoast] = useState<RoastData | null>(null);
+    const { resumeData, isLoaded } = useResume();
+    const [roast, setRoast] = useState<RoastResponse | null>(null);
     const [roasting, setRoasting] = useState(false);
-    const [selectedRoastLevel, setSelectedRoastLevel] = useState<
-        "mild" | "spicy" | "brutal"
-    >("spicy");
+    const [intensity, setIntensity] = useState<"mild" | "medium" | "brutal">("medium");
 
-    const handleUploadComplete = (data: ResumeData) => {
-        setResumeData(data);
-        setRoast(null);
-    };
-
-    const roastResume = async () => {
+    const getRoast = async () => {
         if (!resumeData) return;
         setRoasting(true);
         try {
+            // Map our UI intensity to the API's roast level
+            const roastLevel = intensity === "medium" ? "spicy" : 
+                             intensity === "mild" ? "mild" : "brutal";
+
             const res = await fetch("/api/roast-resume", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     resumeText: resumeData.parsedText,
-                    roastLevel: selectedRoastLevel,
+                    roastLevel,
                 }),
             });
             const data = await res.json();
@@ -62,162 +54,196 @@ export default function RoastPage() {
         }
     };
 
+    if (!isLoaded) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-french-blue" />
+            </div>
+        );
+    }
+
     return (
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-12 text-center"
             >
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl neo-interactive">
-                    <Flame className="h-8 w-8 text-french-blue dark:text-cool-sky" />
+                <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl neo-sm mb-6">
+                    <Flame className="h-6 w-6 text-french-blue dark:text-cool-sky" />
                 </div>
-                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                    <span className="text-foreground">AI Resume </span>
                     <span className="bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
-                        AI Resume Roaster
+                        Roaster
                     </span>
                 </h1>
-                <p className="mt-4 text-xl text-muted-foreground max-w-2xl mx-auto">
-                    Sometimes the truth hurts. Upload your resume and let our AI tear it apart (or be gentle, your choice).
+                <p className="mt-2 text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+                    Brutal honesty is the best policy. Let our AI tear apart your resume so you can build it back stronger.
                 </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Left Column - Controls */}
-                <div className="lg:col-span-4 space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <FileText className="h-5 w-5 text-french-blue dark:text-cool-sky" />
-                                1. Upload Resume
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Control Sidebar */}
+                <div className="lg:col-span-4 space-y-8">
+                    {/* Resume Card */}
+                    <Card className="neo p-2">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                                <FileText className="h-6 w-6 text-french-blue dark:text-cool-sky" />
+                                Your Identity
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <ResumeUploader onUploadComplete={handleUploadComplete} />
+                            <ResumeUploader />
                         </CardContent>
                     </Card>
 
+                    {/* roast Settings */}
                     <AnimatePresence>
                         {resumeData && (
                             <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                className="space-y-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="space-y-8"
                             >
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Flame className="h-5 w-5 text-dark-amaranth dark:text-cool-sky" />
-                                            2. Choose Intensity
-                                        </CardTitle>
+                                <Card className="neo">
+                                    <CardHeader className="pb-4">
+                                        <CardTitle className="text-lg font-bold">Roast Settings</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
-                                        <div className="grid grid-cols-3 gap-2">
-                                            {[
-                                                { level: "mild" as const, icon: ThermometerSun, label: "Mild" },
-                                                { level: "spicy" as const, icon: Flame, label: "Spicy" },
-                                                { level: "brutal" as const, icon: Zap, label: "Brutal" },
-                                            ].map(({ level, icon: Icon, label }) => (
-                                                <Button
-                                                    key={level}
-                                                    variant="default"
-                                                    onClick={() => setSelectedRoastLevel(level)}
-                                                    className={`h-24 flex-col gap-3 transition-all rounded-2xl ${
-                                                        selectedRoastLevel === level
-                                                        ? "neo-pressed text-french-blue dark:text-cool-sky border-transparent"
-                                                        : "neo-interactive text-muted-foreground hover:neo-pressed bg-transparent"
-                                                    }`}
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {(["mild", "medium", "brutal"] as const).map((lvl) => (
+                                                <button
+                                                    key={lvl}
+                                                    onClick={() => setIntensity(lvl)}
+                                                    className={`py-3 px-2 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all
+                                                        ${intensity === lvl 
+                                                            ? "neo-pressed text-french-blue dark:text-cool-sky" 
+                                                            : "neo-interactive hover:neo-pressed text-muted-foreground"}`}
                                                 >
-                                                    <Icon className="h-6 w-6" />
-                                                    <span className="text-xs font-bold uppercase tracking-wider">{label}</span>
-                                                </Button>
+                                                    {lvl}
+                                                </button>
                                             ))}
                                         </div>
+                                        
                                         <Button
-                                            onClick={roastResume}
+                                            onClick={getRoast}
                                             disabled={roasting}
-                                            size="lg"
-                                            className="w-full gap-2 h-14 text-lg font-bold rounded-2xl"
+                                            className="w-full gap-3 text-french-blue dark:text-cool-sky font-bold h-16 rounded-3xl neo-interactive hover:neo-pressed border-none bg-background text-lg shadow-none"
                                         >
                                             {roasting ? (
                                                 <Loader2 className="h-6 w-6 animate-spin" />
                                             ) : (
-                                                <Flame className="h-6 w-6" />
+                                                <Zap className="h-6 w-6 fill-current" />
                                             )}
-                                            {roasting ? "Roasting..." : "Roast My Resume"}
+                                            {roasting ? "Roasting..." : "Start the Roast"}
                                         </Button>
                                     </CardContent>
                                 </Card>
+
+                                <div className="p-8 rounded-3xl neo bg-background/50 text-center">
+                                    <p className="text-sm font-bold text-muted-foreground leading-relaxed italic">
+                                        "My resume is perfect" 
+                                        <br />
+                                        <span className="text-french-blue dark:text-cool-sky not-italic">— You, 5 minutes before this.</span>
+                                    </p>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
 
-                {/* Right Column - Result */}
+                {/* Main Roast Area */}
                 <div className="lg:col-span-8">
-                    {!resumeData && (
-                        <Card className="neo-pressed h-full min-h-[400px] flex items-center justify-center">
-                            <CardContent className="text-center py-12">
-                                <div className="flex h-24 w-24 items-center justify-center rounded-full neo-sm mx-auto mb-8">
-                                    <Sparkles className="h-10 w-10 text-french-blue/50" />
-                                </div>
-                                <h3 className="text-xl font-semibold opacity-50">Waiting for your resume...</h3>
-                                <p className="text-muted-foreground mt-2 max-w-xs mx-auto">
-                                    Upload your resume to see the roast. Don't worry, we're mostly joking.
+                    {!resumeData ? (
+                        <Card className="neo-pressed border-none">
+                            <CardContent className="flex flex-col items-center justify-center py-32 text-center px-6">
+                                <motion.div
+                                    animate={{ rotate: [0, 10, -10, 0] }}
+                                    transition={{ duration: 5, repeat: Infinity }}
+                                    className="mb-8"
+                                >
+                                    <div className="h-32 w-32 flex items-center justify-center rounded-3xl neo">
+                                        <Flame className="h-16 w-16 text-french-blue dark:text-cool-sky/50" />
+                                    </div>
+                                </motion.div>
+                                <h3 className="text-2xl font-bold mb-3">Feed the AI</h3>
+                                <p className="text-muted-foreground max-w-sm text-lg font-medium">
+                                    Upload your resume in the sidebar to begin your journey of self-improvement through pain.
                                 </p>
                             </CardContent>
                         </Card>
-                    )}
-
-                    <AnimatePresence mode="wait">
-                        {roasting ? (
-                            <motion.div
-                                key="loading"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 1.05 }}
-                                className="h-full min-h-[400px]"
-                            >
-                                <Card className="neo-pressed h-full flex items-center justify-center">
-                                    <CardContent className="text-center">
-                                        <div className="relative mx-auto mb-6 h-20 w-20">
-                                            <Flame className="h-20 w-20 text-french-blue dark:text-cool-sky animate-pulse" />
-                                            <motion.div
-                                                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-                                                transition={{ duration: 1, repeat: Infinity }}
-                                                className="absolute inset-0 bg-french-blue/20 dark:bg-cool-sky/20 blur-2xl rounded-full"
-                                            />
+                    ) : roasting ? (
+                        <Card className="neo-pressed border-none min-h-[500px] flex items-center justify-center">
+                            <CardContent>
+                                <div className="text-center space-y-6">
+                                    <div className="relative inline-block">
+                                        <Loader2 className="h-20 w-20 animate-spin text-french-blue dark:text-cool-sky" />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <Flame className="h-8 w-8 text-french-blue/30" />
                                         </div>
-                                        <h3 className="text-2xl font-bold text-french-blue dark:text-cool-sky">Sharpening the logic...</h3>
-                                        <p className="text-muted-foreground mt-2">Preparing a {selectedRoastLevel} roast for your resume.</p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ) : roast ? (
-                            <motion.div
-                                key="result"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <RoastCard
-                                    roastLevel={roast.roastLevel}
-                                    roastText={roast.roastText}
-                                />
-
-                                <div className="mt-8 p-8 rounded-3xl neo-pressed flex flex-col sm:flex-row gap-6 items-center justify-between">
-                                    <div>
-                                        <h4 className="font-bold text-french-blue dark:text-cool-sky text-lg">Want serious feedback?</h4>
-                                        <p className="text-base text-muted-foreground font-medium mt-1">Check out our ATS Analysis for professional improvements.</p>
                                     </div>
-                                    <Button variant="outline" className="h-12 px-6 rounded-2xl" onClick={() => window.location.href = "/dashboard"}>
-                                        Go to Dashboard
-                                    </Button>
+                                    <div>
+                                        <h3 className="text-2xl font-bold mb-2">Sharpening the AI's Wit...</h3>
+                                        <p className="text-muted-foreground font-medium">Evaluating your life choices and formatting.</p>
+                                    </div>
                                 </div>
-                            </motion.div>
-                        ) : null}
-                    </AnimatePresence>
+                            </CardContent>
+                        </Card>
+                    ) : roast ? (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
+                            <RoastCard
+                                roastLevel={roast.roastLevel}
+                                roastText={roast.roastText}
+                            />
+                            
+                            <div className="mt-8 p-8 rounded-3xl neo-pressed flex flex-col sm:flex-row gap-6 items-center justify-between">
+                                <div>
+                                    <h4 className="font-bold text-french-blue dark:text-cool-sky text-lg">Want serious feedback?</h4>
+                                    <p className="text-base text-muted-foreground font-medium mt-1">Check out our ATS Analysis for professional improvements.</p>
+                                </div>
+                                <Button variant="outline" className="h-12 px-6 rounded-2xl neo-interactive hover:neo-pressed border-none bg-background font-bold" onClick={() => window.location.href = "/dashboard"}>
+                                    Go to Dashboard
+                                </Button>
+                            </div>
+                        </motion.div>
+                    ) : (
+                        <Card className="neo overflow-hidden border-none cursor-default">
+                            <CardContent className="p-0">
+                                <div className="bg-gradient-to-br from-french-blue/5 to-cool-sky/5 p-12 text-center">
+                                    <div className="h-16 w-16 mx-auto mb-6 flex items-center justify-center rounded-2xl neo-sm">
+                                        <Target className="h-8 w-8 text-french-blue dark:text-cool-sky" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-4">Ready to Roast</h3>
+                                    <p className="text-muted-foreground text-lg font-medium max-w-md mx-auto leading-relaxed">
+                                        Select your intensity level and hit the big button to see what the AI really thinks about your accomplishments.
+                                    </p>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border/20">
+                                    <div className="p-8 bg-background">
+                                        <h4 className="font-bold flex items-center gap-2 mb-3">
+                                            <Sparkles className="h-4 w-4 text-french-blue" />
+                                            Mild Roast
+                                        </h4>
+                                        <p className="text-sm text-muted-foreground font-medium">Constructive criticism with a polite smile. Mostly.</p>
+                                    </div>
+                                    <div className="p-8 bg-background">
+                                        <h4 className="font-bold flex items-center gap-2 mb-3">
+                                            <Flame className="h-4 w-4 text-cool-sky" />
+                                            Brutal Roast
+                                        </h4>
+                                        <p className="text-sm text-muted-foreground font-medium">No holding back. Prepare for emotional damage.</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
         </div>

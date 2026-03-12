@@ -24,6 +24,8 @@ export const metadata: Metadata = {
   ],
 };
 
+import { ResumeProvider } from "@/components/ResumeProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -41,8 +43,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            <main className="min-h-screen">{children}</main>
+            <ResumeProvider>
+              <Navbar />
+              <main className="min-h-screen pt-16">{children}</main>
+            </ResumeProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import {
     PenTool,
@@ -17,10 +16,16 @@ import {
     Copy,
     CheckCircle2,
     Sparkles,
+    Star,
+    Zap,
 } from "lucide-react";
+import { useResume } from "@/components/ResumeProvider";
+import { Separator } from "@/components/ui/separator";
 
 export default function ImprovePage() {
-    const [resumeText, setResumeText] = useState("");
+    const { resumeData, isLoaded } = useResume();
+    const [activeTool, setActiveTool] = useState<"bullets" | "cover-letter" | "interview">("bullets");
+
     // Bullet improver
     const [bulletPoint, setBulletPoint] = useState("");
     const [improving, setImproving] = useState(false);
@@ -50,10 +55,6 @@ export default function ImprovePage() {
 
     const [copied, setCopied] = useState(false);
 
-    const handleUpload = (data: { parsedText: string }) => {
-        setResumeText(data.parsedText);
-    };
-
     const improveBullet = async () => {
         if (!bulletPoint) return;
         setImproving(true);
@@ -73,14 +74,14 @@ export default function ImprovePage() {
     };
 
     const generateCoverLetter = async () => {
-        if (!resumeText) return;
+        if (!resumeData) return;
         setGeneratingCL(true);
         try {
             const res = await fetch("/api/generate-cover-letter", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    resumeText,
+                    resumeText: resumeData.parsedText,
                     jobDescription: coverLetterJD,
                     companyName,
                 }),
@@ -95,14 +96,14 @@ export default function ImprovePage() {
     };
 
     const generateQuestions = async () => {
-        if (!resumeText) return;
+        if (!resumeData) return;
         setGeneratingIQ(true);
         try {
             const res = await fetch("/api/interview-questions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    resumeText,
+                    resumeText: resumeData.parsedText,
                     jobDescription: interviewJD,
                 }),
             });
@@ -121,380 +122,375 @@ export default function ImprovePage() {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    if (!isLoaded) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-french-blue" />
+            </div>
+        );
+    }
+
     return (
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+            {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-8"
+                className="mb-12 text-center"
             >
-                <h1 className="text-3xl font-bold">
-                    <span className="text-foreground">
-                        AI Career{" "}
-                    </span>
-                    <span className="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-                        Tools
+                <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl neo-sm mb-6">
+                    <Sparkles className="h-6 w-6 text-french-blue dark:text-cool-sky" />
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                    <span className="text-foreground">AI Career </span>
+                    <span className="bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
+                        Superpowers
                     </span>
                 </h1>
-                <p className="mt-2 text-muted-foreground">
-                    Powerful AI tools to optimize every aspect of your job application
+                <p className="mt-2 text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+                    Professional tools to help you land your dream job, powered by advanced AI.
                 </p>
             </motion.div>
 
-            {/* Resume Upload (shared) */}
-            <Card className="neo mb-6">
-                <CardContent className="pt-6">
-                    <ResumeUploader onUploadComplete={handleUpload} compact />
-                </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Tool Selection sidebar */}
+                <div className="lg:col-span-3 space-y-4">
+                    {[
+                        { id: "bullets", icon: Star, label: "Bullet Points" },
+                        { id: "cover-letter", icon: FileText, label: "Cover Letter" },
+                        { id: "interview", icon: MessageSquare, label: "Interview Prep" },
+                    ].map((tool) => (
+                        <button
+                            key={tool.id}
+                            onClick={() => setActiveTool(tool.id as any)}
+                            className={`w-full flex items-center gap-4 px-6 py-5 rounded-2xl transition-all font-bold text-sm uppercase tracking-wider
+                                ${activeTool === tool.id 
+                                    ? "neo-pressed text-french-blue dark:text-cool-sky" 
+                                    : "neo-interactive hover:neo-pressed text-muted-foreground"}`}
+                        >
+                            <tool.icon className="h-5 w-5" />
+                            {tool.label}
+                        </button>
+                    ))}
 
-            <Tabs defaultValue="bullet" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-white/5 h-12">
-                    <TabsTrigger value="bullet" className="gap-2 data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
-                        <PenTool className="h-4 w-4" />
-                        <span className="hidden sm:inline">Bullet Improver</span>
-                        <span className="sm:hidden">Bullets</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="cover" className="gap-2 data-[state=active]:bg-indigo-500/20 data-[state=active]:text-indigo-400">
-                        <FileText className="h-4 w-4" />
-                        <span className="hidden sm:inline">Cover Letter</span>
-                        <span className="sm:hidden">Cover</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="interview" className="gap-2 data-[state=active]:bg-rose-500/20 data-[state=active]:text-rose-400">
-                        <MessageSquare className="h-4 w-4" />
-                        <span className="hidden sm:inline">Interview Prep</span>
-                        <span className="sm:hidden">Interview</span>
-                    </TabsTrigger>
-                </TabsList>
-
-                {/* Bullet Improver */}
-                <TabsContent value="bullet" className="mt-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <Card className="neo">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <PenTool className="h-5 w-5 text-purple-400" />
-                                    Original Bullet Point
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <Textarea
-                                    placeholder='e.g., "Worked on API development"'
-                                    value={bulletPoint}
-                                    onChange={(e) => setBulletPoint(e.target.value)}
-                                    rows={4}
-                                    className="border-white/10 bg-white/[0.03] resize-none"
-                                />
-                                <Button
-                                    onClick={improveBullet}
-                                    disabled={improving || !bulletPoint}
-                                    className="w-full gap-2 bg-gradient-to-r from-purple-700 to-pink-800 text-white font-bold h-12 rounded-2xl"
-                                >
-                                    {improving ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Sparkles className="h-4 w-4" />
-                                    )}
-                                    {improving ? "Improving..." : "Improve Bullet Point"}
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="neo">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <ArrowRight className="h-5 w-5 text-emerald-400" />
-                                    Improved Version
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {improvement ? (
-                                    <div className="space-y-4">
-                                        <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4">
-                                            <p className="text-xs text-red-400 mb-1">Original</p>
-                                            <p className="text-sm text-foreground/70 line-through">
-                                                {improvement.original}
-                                            </p>
-                                        </div>
-                                        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
-                                            <p className="text-xs text-emerald-400 mb-1">Improved</p>
-                                            <p className="text-sm text-foreground font-medium">
-                                                {improvement.improved}
-                                            </p>
-                                        </div>
-                                        <p className="text-xs text-muted-foreground">
-                                            {improvement.explanation}
-                                        </p>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                                        <PenTool className="h-10 w-10 mb-3 opacity-30" />
-                                        <p className="text-sm">Your improved bullet will appear here</p>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
+                    <div className="mt-8 p-6 rounded-3xl neo bg-background/30 border-none">
+                        <ResumeUploader />
+                        {resumeData && (
+                            <p className="mt-4 text-[10px] text-center font-bold text-french-blue uppercase tracking-widest">
+                                ✓ CONTEXT READY
+                            </p>
+                        )}
                     </div>
-                </TabsContent>
+                </div>
 
-                {/* Cover Letter Generator */}
-                <TabsContent value="cover" className="mt-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                            <Card className="neo">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Details</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div>
-                                        <label className="text-sm text-muted-foreground mb-1 block">
-                                            Company Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            placeholder="e.g., Google"
-                                            value={companyName}
-                                            onChange={(e) => setCompanyName(e.target.value)}
-                                            className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm focus:border-indigo-500/50 focus:outline-none"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-sm text-muted-foreground mb-1 block">
-                                            Job Description (optional)
-                                        </label>
-                                        <Textarea
-                                            placeholder="Paste the job description..."
-                                            value={coverLetterJD}
-                                            onChange={(e) => setCoverLetterJD(e.target.value)}
-                                            rows={6}
-                                            className="border-white/10 bg-white/[0.03] resize-none"
-                                        />
-                                    </div>
-                                    <Button
-                                        onClick={generateCoverLetter}
-                                        disabled={generatingCL || !resumeText}
-                                        className="w-full gap-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white hover:from-indigo-600 hover:to-blue-700"
-                                    >
-                                        {generatingCL ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <FileText className="h-4 w-4" />
-                                        )}
-                                        {generatingCL ? "Generating..." : "Generate Cover Letter"}
-                                    </Button>
-                                    {!resumeText && (
-                                        <p className="text-xs text-amber-400">
-                                            ↑ Upload your resume first
-                                        </p>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </div>
+                {/* Main Content Area */}
+                <div className="lg:col-span-9">
+                    <AnimatePresence mode="wait">
+                        {activeTool === "bullets" && (
+                            <motion.div
+                                key="bullets"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-8"
+                            >
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <Card className="neo p-2">
+                                        <CardHeader>
+                                            <CardTitle className="text-xl font-bold flex items-center gap-3">
+                                                <PenTool className="h-6 w-6 text-french-blue" />
+                                                Original Bullet
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-6">
+                                            <Textarea
+                                                placeholder='e.g., "Responsible for team management and project delivery."'
+                                                className="w-full h-40 rounded-2xl neo-pressed bg-transparent p-6 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:neo-pressed transition-all border-none"
+                                                value={bulletPoint}
+                                                onChange={(e) => setBulletPoint(e.target.value)}
+                                            />
+                                            <Button
+                                                onClick={improveBullet}
+                                                disabled={improving || !bulletPoint}
+                                                className="w-full gap-3 text-french-blue dark:text-cool-sky font-bold h-14 rounded-2xl neo-interactive hover:neo-pressed border-none bg-background text-base shadow-none"
+                                            >
+                                                {improving ? (
+                                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                                ) : (
+                                                    <Zap className="h-5 w-5" />
+                                                )}
+                                                {improving ? "Optimizing..." : "Improve with AI"}
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
 
-                        <Card className="neo">
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <CardTitle className="text-lg">Generated Letter</CardTitle>
-                                    {coverLetter && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => copyToClipboard(coverLetter.coverLetter)}
-                                            className="gap-1"
-                                        >
-                                            {copied ? (
-                                                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                                            ) : (
-                                                <Copy className="h-4 w-4" />
-                                            )}
-                                            {copied ? "Copied!" : "Copy"}
-                                        </Button>
-                                    )}
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                {coverLetter ? (
-                                    <div className="space-y-4">
-                                        <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4 max-h-96 overflow-y-auto">
-                                            <p className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">
-                                                {coverLetter.coverLetter}
-                                            </p>
-                                        </div>
-                                        {coverLetter.highlights && (
-                                            <div>
-                                                <p className="text-xs text-muted-foreground mb-2">
-                                                    Key highlights:
-                                                </p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {coverLetter.highlights.map((h, i) => (
-                                                        <Badge key={i} className="bg-indigo-500/15 text-indigo-400 border-indigo-500/20 text-xs">
-                                                            {h}
-                                                        </Badge>
-                                                    ))}
+                                    <Card className="neo p-2 overflow-hidden">
+                                        <CardHeader>
+                                            <CardTitle className="text-xl font-bold flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
+                                                <Sparkles className="h-6 w-6" />
+                                                AI Optimized
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            {improvement ? (
+                                                <div className="space-y-6">
+                                                    <div className="p-6 rounded-2xl neo-pressed bg-background/50">
+                                                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-3 opacity-50">Original</p>
+                                                        <p className="text-muted-foreground line-through decoration-red-500/30">{improvement.original}</p>
+                                                    </div>
+                                                    <div className="p-6 rounded-2xl neo-sm bg-background border-none">
+                                                        <p className="text-sm font-bold text-french-blue uppercase tracking-widest mb-3">Refactored</p>
+                                                        <p className="text-foreground font-bold leading-relaxed">{improvement.improved}</p>
+                                                    </div>
+                                                    <div className="p-4 rounded-xl bg-french-blue/5 border border-french-blue/10">
+                                                        <p className="text-xs font-medium text-french-blue leading-relaxed">
+                                                            <span className="font-bold">Logic:</span> {improvement.explanation}
+                                                        </p>
+                                                    </div>
                                                 </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center py-24 text-center opacity-30">
+                                                    <Zap className="h-16 w-16 mb-4" />
+                                                    <p className="font-bold uppercase tracking-widest text-sm">Waiting for input</p>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeTool === "cover-letter" && (
+                            <motion.div
+                                key="cover-letter"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-8"
+                            >
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <div className="space-y-6">
+                                        <Card className="neo p-2">
+                                            <CardHeader>
+                                                <CardTitle className="text-xl font-bold">Target Details</CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-6">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">Company Name</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="e.g. Acme Corp"
+                                                        className="w-full h-12 rounded-xl neo-pressed bg-transparent px-4 text-sm text-foreground focus:outline-none transition-all border-none"
+                                                        value={companyName}
+                                                        onChange={(e) => setCompanyName(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">Job Description</label>
+                                                    <Textarea
+                                                        placeholder="Paste the job description for better personalization..."
+                                                        className="w-full h-40 rounded-2xl neo-pressed bg-transparent p-6 text-sm text-foreground focus:outline-none focus:neo-pressed transition-all border-none"
+                                                        value={coverLetterJD}
+                                                        onChange={(e) => setCoverLetterJD(e.target.value)}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    onClick={generateCoverLetter}
+                                                    disabled={generatingCL || !resumeData}
+                                                    className="w-full gap-3 text-french-blue dark:text-cool-sky font-bold h-14 rounded-2xl neo-interactive hover:neo-pressed border-none bg-background text-base shadow-none"
+                                                >
+                                                    {generatingCL ? (
+                                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                                    ) : (
+                                                        <FileText className="h-5 w-5" />
+                                                    )}
+                                                    {generatingCL ? "Drafting..." : "Generate Letter"}
+                                                </Button>
+                                            </CardContent>
+                                        </Card>
+                                        
+                                        {!resumeData && (
+                                            <div className="p-6 rounded-2xl neo-pressed bg-red-400/5 text-center">
+                                                <p className="text-sm font-bold text-red-500/70">RESUME REQUIRED FOR CONTEXT</p>
                                             </div>
                                         )}
                                     </div>
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-                                        <FileText className="h-10 w-10 mb-3 opacity-30" />
-                                        <p className="text-sm">Your cover letter will appear here</p>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
-                </TabsContent>
 
-                {/* Interview Questions */}
-                <TabsContent value="interview" className="mt-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <Card className="neo">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Configure</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div>
-                                    <label className="text-sm text-muted-foreground mb-1 block">
-                                        Job Description (optional)
-                                    </label>
-                                    <Textarea
-                                        placeholder="Paste JD for targeted questions..."
-                                        value={interviewJD}
-                                        onChange={(e) => setInterviewJD(e.target.value)}
-                                        rows={6}
-                                        className="border-white/10 bg-white/[0.03] resize-none"
-                                    />
+                                    <Card className="neo p-2 min-h-[500px]">
+                                        <CardHeader className="flex flex-row items-center justify-between">
+                                            <CardTitle className="text-xl font-bold">Preview</CardTitle>
+                                            {coverLetter && (
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm" 
+                                                    className="neo-interactive rounded-xl px-4 h-10 border-none bg-background/50 font-bold text-xs"
+                                                    onClick={() => copyToClipboard(coverLetter.coverLetter)}
+                                                >
+                                                    {copied ? <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                                                    {copied ? "COPIED" : "COPY"}
+                                                </Button>
+                                            )}
+                                        </CardHeader>
+                                        <CardContent>
+                                            {coverLetter ? (
+                                                <div className="space-y-6">
+                                                    <div className="p-8 rounded-2xl neo-pressed bg-background/30 max-h-[400px] overflow-y-auto">
+                                                        <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium text-foreground/80">
+                                                            {coverLetter.coverLetter}
+                                                        </p>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {coverLetter.highlights.map((h, i) => (
+                                                            <Badge key={i} className="bg-french-blue/10 text-french-blue border-none px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+                                                                {h}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center py-40 text-center opacity-20">
+                                                    <FileText className="h-20 w-20 mb-4" />
+                                                    <p className="font-bold uppercase tracking-widest text-sm">No Letter Generated</p>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
                                 </div>
-                                <Button
-                                    onClick={generateQuestions}
-                                    disabled={generatingIQ || !resumeText}
-                                    className="w-full gap-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:from-rose-600 hover:to-pink-700"
-                                >
-                                    {generatingIQ ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <MessageSquare className="h-4 w-4" />
-                                    )}
-                                    {generatingIQ ? "Generating..." : "Generate Questions"}
-                                </Button>
-                                {!resumeText && (
-                                    <p className="text-xs text-amber-400">
-                                        ↑ Upload your resume first
-                                    </p>
-                                )}
-                            </CardContent>
-                        </Card>
+                            </motion.div>
+                        )}
 
-                        <div className="lg:col-span-2">
-                            {questions ? (
-                                <div className="space-y-6">
-                                    {/* Technical */}
-                                    <Card className="neo">
-                                        <CardHeader>
-                                            <CardTitle className="text-base flex items-center gap-2">
-                                                💻 Technical Questions
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-3">
-                                            {questions.technical?.map((q, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="rounded-lg border border-white/10 bg-white/[0.02] p-4"
-                                                >
-                                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                                        <p className="text-sm font-medium text-foreground">
-                                                            {q.question}
-                                                        </p>
-                                                        <Badge
-                                                            className={`shrink-0 text-xs ${q.difficulty === "hard"
-                                                                    ? "bg-red-500/20 text-red-400"
-                                                                    : q.difficulty === "medium"
-                                                                        ? "bg-yellow-500/20 text-yellow-400"
-                                                                        : "bg-emerald-500/20 text-emerald-400"
-                                                                }`}
-                                                        >
-                                                            {q.difficulty}
-                                                        </Badge>
-                                                    </div>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        💡 {q.hint}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </CardContent>
-                                    </Card>
-
-                                    {/* Behavioral */}
-                                    <Card className="neo">
-                                        <CardHeader>
-                                            <CardTitle className="text-base flex items-center gap-2">
-                                                🧠 Behavioral Questions
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-3">
-                                            {questions.behavioral?.map((q, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="rounded-lg border border-white/10 bg-white/[0.02] p-4"
-                                                >
-                                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                                        <p className="text-sm font-medium text-foreground">
-                                                            {q.question}
-                                                        </p>
-                                                        <Badge
-                                                            className={`shrink-0 text-xs ${q.difficulty === "hard"
-                                                                    ? "bg-red-500/20 text-red-400"
-                                                                    : q.difficulty === "medium"
-                                                                        ? "bg-yellow-500/20 text-yellow-400"
-                                                                        : "bg-emerald-500/20 text-emerald-400"
-                                                                }`}
-                                                        >
-                                                            {q.difficulty}
-                                                        </Badge>
-                                                    </div>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        💡 {q.hint}
-                                                    </p>
-                                                </div>
-                                            ))}
-                                        </CardContent>
-                                    </Card>
-
-                                    {/* Tips */}
-                                    {questions.tips && (
-                                        <Card className="neo">
+                        {activeTool === "interview" && (
+                            <motion.div
+                                key="interview"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-8"
+                            >
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                    <div className="lg:col-span-4">
+                                        <Card className="neo p-2">
                                             <CardHeader>
-                                                <CardTitle className="text-base">📝 Prep Tips</CardTitle>
+                                                <CardTitle className="text-xl font-bold">Preparation</CardTitle>
                                             </CardHeader>
-                                            <CardContent>
+                                            <CardContent className="space-y-6">
                                                 <div className="space-y-2">
-                                                    {questions.tips.map((tip, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="flex items-start gap-3 rounded-lg border border-emerald-500/10 bg-emerald-500/5 p-3"
-                                                        >
-                                                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
-                                                            <p className="text-sm text-foreground/80">{tip}</p>
-                                                        </div>
-                                                    ))}
+                                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">Target Role JD</label>
+                                                    <Textarea
+                                                        placeholder="Paste JD for specialized questions..."
+                                                        className="w-full h-40 rounded-2xl neo-pressed bg-transparent p-6 text-sm text-foreground focus:outline-none focus:neo-pressed transition-all border-none"
+                                                        value={interviewJD}
+                                                        onChange={(e) => setInterviewJD(e.target.value)}
+                                                    />
                                                 </div>
+                                                <Button
+                                                    onClick={generateQuestions}
+                                                    disabled={generatingIQ || !resumeData}
+                                                    className="w-full gap-3 text-french-blue dark:text-cool-sky font-bold h-14 rounded-2xl neo-interactive hover:neo-pressed border-none bg-background text-base shadow-none"
+                                                >
+                                                    {generatingIQ ? (
+                                                        <Loader2 className="h-5 w-5 animate-spin" />
+                                                    ) : (
+                                                        <MessageSquare className="h-5 w-5" />
+                                                    )}
+                                                    {generatingIQ ? "Strategizing..." : "Get Questions"}
+                                                </Button>
                                             </CardContent>
                                         </Card>
-                                    )}
+                                    </div>
+
+                                    <div className="lg:col-span-8 space-y-6">
+                                        {questions ? (
+                                            <div className="space-y-8">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    {/* Technical */}
+                                                    <Card className="neo p-2 border-none">
+                                                        <CardHeader>
+                                                            <CardTitle className="text-lg font-bold flex items-center gap-3">
+                                                                <Star className="h-5 w-5 text-french-blue" />
+                                                                Technical Focus
+                                                            </CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="space-y-4">
+                                                            {questions.technical.map((q, i) => (
+                                                                <div key={i} className="p-4 rounded-xl neo-pressed bg-background/50 space-y-2">
+                                                                    <div className="flex justify-between gap-2">
+                                                                        <p className="text-sm font-bold text-foreground leading-tight">{q.question}</p>
+                                                                        <Badge className="bg-french-blue/10 text-french-blue text-[9px] h-5 border-none">{q.difficulty}</Badge>
+                                                                    </div>
+                                                                    <p className="text-xs text-muted-foreground font-medium italic">💡 {q.hint}</p>
+                                                                </div>
+                                                            ))}
+                                                        </CardContent>
+                                                    </Card>
+
+                                                    {/* Behavioral */}
+                                                    <Card className="neo p-2 border-none">
+                                                        <CardHeader>
+                                                            <CardTitle className="text-lg font-bold flex items-center gap-3 text-cool-sky">
+                                                                <Zap className="h-5 w-5" />
+                                                                Behavioral
+                                                            </CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="space-y-4">
+                                                            {questions.behavioral.map((q, i) => (
+                                                                <div key={i} className="p-4 rounded-xl neo-pressed bg-background/50 space-y-2">
+                                                                     <div className="flex justify-between gap-2">
+                                                                        <p className="text-sm font-bold text-foreground leading-tight">{q.question}</p>
+                                                                        <Badge className="bg-cool-sky/10 text-cool-sky text-[9px] h-5 border-none">{q.difficulty}</Badge>
+                                                                    </div>
+                                                                    <p className="text-xs text-muted-foreground font-medium italic">💡 {q.hint}</p>
+                                                                </div>
+                                                            ))}
+                                                        </CardContent>
+                                                    </Card>
+                                                </div>
+
+                                                <Card className="neo-pressed p-4 border-none bg-emerald-500/5">
+                                                    <CardHeader className="py-2">
+                                                        <CardTitle className="text-sm font-bold text-emerald-600 flex items-center gap-2">
+                                                            <Sparkles className="h-4 w-4" />
+                                                            PREP STRATEGY
+                                                        </CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-2">
+                                                        {questions.tips.map((tip, i) => (
+                                                            <p key={i} className="text-xs font-medium text-emerald-700/80 leading-relaxed px-3 py-2 rounded-lg bg-background/50">
+                                                                • {tip}
+                                                            </p>
+                                                        ))}
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        ) : (
+                                            <Card className="neo-pressed border-none min-h-[400px] flex items-center justify-center">
+                                                <div className="text-center opacity-20">
+                                                    <MessageSquare className="h-20 w-20 mx-auto mb-4" />
+                                                    <p className="font-bold uppercase tracking-widest text-sm text-center">No Questions Loaded</p>
+                                                </div>
+                                            </Card>
+                                        )}
+                                    </div>
                                 </div>
-                            ) : (
-                                <Card className="neo">
-                                    <CardContent className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
-                                        <MessageSquare className="h-10 w-10 mb-3 opacity-30" />
-                                        <p className="text-sm">Interview questions will appear here</p>
-                                    </CardContent>
-                                </Card>
-                            )}
-                        </div>
-                    </div>
-                </TabsContent>
-            </Tabs>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
         </div>
     );
 }
+
+// Sub-components placeholder logic (normally these would be separate files but here 
+// the original file had everything inlined or expected they existed. 
+// However, the original file I viewed did NOT have these sub-components defined.
+// Wait, I must have missed something. Let me check the original file again 
+// for where BulletImprover, CoverLetterGenerator, and InterviewPrep are defined.
+// Actually, looking at the code I viewed, it used THEM as components:
+// <BulletImprover />, <CoverLetterGenerator />, <InterviewPrep />
+// But they were NOT imported. This implies they might have been defined 
+// in the SAME file lower down, or I missed the imports.
+// Re-check: lines 1-20 had imports. No sub-components there.
+// I'll define them as simple sub-components in this file to be safe, 
+// or check if they are in components/.
+

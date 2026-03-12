@@ -5,9 +5,10 @@ import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, X, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useResume } from "@/components/ResumeProvider";
 
 interface ResumeUploaderProps {
-    onUploadComplete: (data: {
+    onUploadComplete?: (data: {
         id: string;
         fileName: string;
         parsedText: string;
@@ -19,9 +20,9 @@ export default function ResumeUploader({
     onUploadComplete,
     compact = false,
 }: ResumeUploaderProps) {
+    const { setResumeData, resumeData: globalResumeData } = useResume();
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [uploadedFile, setUploadedFile] = useState<string | null>(null);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -46,19 +47,23 @@ export default function ResumeUploader({
                     throw new Error(data.error || "Upload failed");
                 }
 
-                setUploadedFile(file.name);
-                onUploadComplete({
+                const newResumeData = {
                     id: data.resume.id,
                     fileName: data.resume.fileName,
                     parsedText: data.resume.parsedText,
-                });
+                };
+
+                setResumeData(newResumeData);
+                if (onUploadComplete) {
+                    onUploadComplete(newResumeData);
+                }
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Upload failed");
             } finally {
                 setUploading(false);
             }
         },
-        [onUploadComplete]
+        [onUploadComplete, setResumeData]
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -74,7 +79,7 @@ export default function ResumeUploader({
     });
 
     const reset = () => {
-        setUploadedFile(null);
+        setResumeData(null);
         setError(null);
     };
 
@@ -83,39 +88,39 @@ export default function ResumeUploader({
             <div className="w-full">
                 <div
                     {...getRootProps()}
-                    className={`relative flex items-center gap-3 rounded-xl border-2 border-dashed p-4 transition-all cursor-pointer
-            ${isDragActive ? "border-orange-500 bg-orange-500/10" : "border-white/15 hover:border-orange-500/50 hover:bg-white/5"}
+                    className={`relative flex items-center gap-3 rounded-xl border-none p-4 transition-all cursor-pointer neo-sm active:neo-pressed
+            ${isDragActive ? "neo-pressed bg-french-blue/5" : "hover:neo-pressed hover:bg-white/5"}
             ${uploading ? "pointer-events-none opacity-50" : ""}`}
                 >
                     <input {...getInputProps()} />
                     {uploading ? (
-                        <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
-                    ) : uploadedFile ? (
+                        <Loader2 className="h-5 w-5 animate-spin text-french-blue dark:text-cool-sky" />
+                    ) : globalResumeData ? (
                         <CheckCircle2 className="h-5 w-5 text-emerald-500" />
                     ) : (
                         <Upload className="h-5 w-5 text-muted-foreground" />
                     )}
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm font-medium text-muted-foreground">
                         {uploading
                             ? "Processing..."
-                            : uploadedFile
-                                ? uploadedFile
+                            : globalResumeData
+                                ? globalResumeData.fileName
                                 : "Drop resume or click to upload"}
                     </span>
-                    {uploadedFile && (
+                    {globalResumeData && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 reset();
                             }}
-                            className="ml-auto"
+                            className="ml-auto p-1 rounded-full hover:bg-muted transition-colors"
                         >
                             <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
                         </button>
                     )}
                 </div>
                 {error && (
-                    <p className="mt-2 text-sm text-red-400">{error}</p>
+                    <p className="mt-2 text-sm text-destructive">{error}</p>
                 )}
             </div>
         );
@@ -124,24 +129,24 @@ export default function ResumeUploader({
     return (
         <div className="w-full">
             <AnimatePresence mode="wait">
-                {uploadedFile ? (
+                {globalResumeData ? (
                     <motion.div
                         key="uploaded"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="flex flex-col items-center gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-8"
+                        className="flex flex-col items-center gap-4 rounded-2xl neo-pressed p-8 sm:p-12"
                     >
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full neo-sm bg-emerald-500/5">
                             <CheckCircle2 className="h-8 w-8 text-emerald-500" />
                         </div>
                         <div className="text-center">
-                            <p className="font-medium text-foreground">{uploadedFile}</p>
-                            <p className="text-sm text-emerald-400">
+                            <p className="font-bold text-lg text-foreground">{globalResumeData.fileName}</p>
+                            <p className="text-sm text-muted-foreground font-medium mt-1">
                                 Successfully uploaded & parsed
                             </p>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={reset}>
+                        <Button variant="outline" size="sm" onClick={reset} className="rounded-xl px-6 h-10 mt-4 neo-interactive hover:neo-pressed border-none">
                             Upload Different Resume
                         </Button>
                     </motion.div>
@@ -154,47 +159,46 @@ export default function ResumeUploader({
                     >
                         <div
                             {...getRootProps()}
-                            className={`relative flex flex-col items-center gap-4 rounded-2xl border-2 border-dashed p-12 transition-all cursor-pointer
-                ${isDragActive ? "border-orange-500 bg-orange-500/10 scale-[1.02]" : "border-white/15 hover:border-orange-500/50 hover:bg-white/5"}
-                ${uploading ? "pointer-events-none" : ""}`}
+                            className={`relative flex flex-col items-center gap-6 rounded-3xl p-12 transition-all cursor-pointer neo active:neo-pressed
+                ${isDragActive ? "neo-pressed scale-[0.98]" : "hover:neo-pressed"}
+                ${uploading ? "pointer-events-none opacity-50" : ""}`}
                         >
                             <input {...getInputProps()} />
 
                             {uploading ? (
                                 <>
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/20">
-                                        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+                                    <div className="flex h-20 w-20 items-center justify-center rounded-full neo-pressed">
+                                        <Loader2 className="h-10 w-10 animate-spin text-french-blue dark:text-cool-sky" />
                                     </div>
                                     <div className="text-center">
-                                        <p className="font-medium text-foreground">
-                                            Processing your resume...
+                                        <p className="font-bold text-xl text-foreground">
+                                            Processing...
                                         </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Extracting text and analyzing
+                                        <p className="text-sm text-muted-foreground font-medium mt-2">
+                                            Extracting details with AI
                                         </p>
                                     </div>
                                 </>
                             ) : (
                                 <>
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-500/20 to-red-500/20">
-                                        <FileText className="h-8 w-8 text-orange-400" />
+                                    <div className="flex h-20 w-20 items-center justify-center rounded-full neo-sm text-french-blue dark:text-cool-sky">
+                                        <Upload className="h-10 w-10" />
                                     </div>
                                     <div className="text-center">
-                                        <p className="font-medium text-foreground">
+                                        <p className="font-bold text-xl text-foreground">
                                             {isDragActive
-                                                ? "Drop your resume here!"
-                                                : "Drag & drop your resume"}
+                                                ? "Drop it here!"
+                                                : "Upload Your Resume"}
                                         </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            PDF or DOCX, up to 10MB
+                                        <p className="text-sm text-muted-foreground font-medium mt-2 max-w-xs">
+                                            PDF or DOCX supported. Your privacy is our priority.
                                         </p>
                                     </div>
                                     <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mt-2 border-orange-500/30 text-orange-400 hover:bg-orange-500/10"
+                                        variant="default"
+                                        size="lg"
+                                        className="mt-2 h-12 px-8 rounded-2xl font-bold"
                                     >
-                                        <Upload className="mr-2 h-4 w-4" />
                                         Browse Files
                                     </Button>
                                 </>
@@ -208,7 +212,7 @@ export default function ResumeUploader({
                 <motion.p
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 text-center text-sm text-red-400"
+                    className="mt-4 text-center text-sm font-bold text-destructive"
                 >
                     {error}
                 </motion.p>
