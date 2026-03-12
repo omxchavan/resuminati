@@ -27,10 +27,11 @@ interface MatchResult {
 }
 
 export default function JobMatchPage() {
-  const { resumeData, isLoaded } = useResume();
-  const [jobDescription, setJobDescription] = useState("");
+  const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
+  const jobMatchData = analyses.jobMatch;
+  const [jobDescription, setJobDescription] = useState(jobMatchData?.jobDescription || "");
   const [matching, setMatching] = useState(false);
-  const [result, setResult] = useState<MatchResult | null>(null);
+  const result = jobMatchData?.result || null;
 
   const calculateMatch = async () => {
     if (!resumeData || !jobDescription) return;
@@ -46,7 +47,10 @@ export default function JobMatchPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setResult(data.match);
+        setAnalysis("jobMatch", {
+          jobDescription,
+          result: data.match
+        });
       }
     } catch (error) {
       console.error("Match failed:", error);
@@ -243,7 +247,7 @@ export default function JobMatchPage() {
                         Matched Skills ({result.matchedKeywords.length})
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {result.matchedKeywords.map((kw, i) => (
+                        {result.matchedKeywords.map((kw: string, i: number) => (
                           <span key={i} className="px-4 py-2 rounded-xl neo-pressed text-sm font-bold text-emerald-600 dark:text-emerald-400">
                             {kw}
                           </span>
@@ -258,7 +262,7 @@ export default function JobMatchPage() {
                         Missing Requirements ({result.missingKeywords.length})
                       </h4>
                       <div className="flex flex-wrap gap-2">
-                        {result.missingKeywords.map((kw, i) => (
+                        {result.missingKeywords.map((kw: string, i: number) => (
                           <span key={i} className="px-4 py-2 rounded-xl neo-sm text-sm font-bold text-red-500 dark:text-red-400">
                             {kw}
                           </span>
@@ -293,7 +297,7 @@ export default function JobMatchPage() {
                   <div className="space-y-4">
                     <h4 className="font-bold text-foreground">Actionable Recommendations:</h4>
                     <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
-                      {result.recommendations.map((rec, i) => (
+                      {result.recommendations.map((rec: string, i: number) => (
                         <div key={i} className="flex items-start gap-4 p-4 rounded-2xl neo-pressed font-medium text-muted-foreground/80">
                           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg neo-sm text-xs font-bold text-french-blue">
                             {i+1}

@@ -23,35 +23,24 @@ import { useResume } from "@/components/ResumeProvider";
 import { Separator } from "@/components/ui/separator";
 
 export default function ImprovePage() {
-    const { resumeData, isLoaded } = useResume();
+    const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
     const [activeTool, setActiveTool] = useState<"bullets" | "cover-letter" | "interview">("bullets");
 
     // Bullet improver
-    const [bulletPoint, setBulletPoint] = useState("");
+    const [bulletPoint, setBulletPoint] = useState(analyses.bulletImprover?.original || "");
     const [improving, setImproving] = useState(false);
-    const [improvement, setImprovement] = useState<{
-        original: string;
-        improved: string;
-        explanation: string;
-    } | null>(null);
+    const improvement = analyses.bulletImprover || null;
 
     // Cover letter
-    const [coverLetterJD, setCoverLetterJD] = useState("");
-    const [companyName, setCompanyName] = useState("");
+    const [coverLetterJD, setCoverLetterJD] = useState(analyses.coverLetter?.jobDescription || "");
+    const [companyName, setCompanyName] = useState(analyses.coverLetter?.companyName || "");
     const [generatingCL, setGeneratingCL] = useState(false);
-    const [coverLetter, setCoverLetter] = useState<{
-        coverLetter: string;
-        highlights: string[];
-    } | null>(null);
+    const coverLetter = analyses.coverLetter?.result || null;
 
     // Interview questions
-    const [interviewJD, setInterviewJD] = useState("");
+    const [interviewJD, setInterviewJD] = useState(analyses.interviewPrep?.jobDescription || "");
     const [generatingIQ, setGeneratingIQ] = useState(false);
-    const [questions, setQuestions] = useState<{
-        technical: Array<{ question: string; hint: string; difficulty: string }>;
-        behavioral: Array<{ question: string; hint: string; difficulty: string }>;
-        tips: string[];
-    } | null>(null);
+    const questions = analyses.interviewPrep?.result || null;
 
     const [copied, setCopied] = useState(false);
 
@@ -65,7 +54,9 @@ export default function ImprovePage() {
                 body: JSON.stringify({ bulletPoint }),
             });
             const data = await res.json();
-            if (data.success) setImprovement(data.improvement);
+            if (data.success) {
+                setAnalysis("bulletImprover", data.improvement);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -87,7 +78,13 @@ export default function ImprovePage() {
                 }),
             });
             const data = await res.json();
-            if (data.success) setCoverLetter(data.coverLetter);
+            if (data.success) {
+                setAnalysis("coverLetter", {
+                    jobDescription: coverLetterJD,
+                    companyName,
+                    result: data.coverLetter
+                });
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -108,7 +105,12 @@ export default function ImprovePage() {
                 }),
             });
             const data = await res.json();
-            if (data.success) setQuestions(data.questions);
+            if (data.success) {
+                setAnalysis("interviewPrep", {
+                    jobDescription: interviewJD,
+                    result: data.questions
+                });
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -340,7 +342,7 @@ export default function ImprovePage() {
                                                         </p>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {coverLetter.highlights.map((h, i) => (
+                                                        {coverLetter.highlights.map((h: string, i: number) => (
                                                             <Badge key={i} className="bg-french-blue/10 text-french-blue border-none px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
                                                                 {h}
                                                             </Badge>
@@ -412,7 +414,7 @@ export default function ImprovePage() {
                                                             </CardTitle>
                                                         </CardHeader>
                                                         <CardContent className="space-y-4">
-                                                            {questions.technical.map((q, i) => (
+                                                            {questions.technical.map((q: any, i: number) => (
                                                                 <div key={i} className="p-4 rounded-xl neo-pressed bg-background/50 space-y-2">
                                                                     <div className="flex justify-between gap-2">
                                                                         <p className="text-sm font-bold text-foreground leading-tight">{q.question}</p>
@@ -433,7 +435,7 @@ export default function ImprovePage() {
                                                             </CardTitle>
                                                         </CardHeader>
                                                         <CardContent className="space-y-4">
-                                                            {questions.behavioral.map((q, i) => (
+                                                            {questions.behavioral.map((q: any, i: number) => (
                                                                 <div key={i} className="p-4 rounded-xl neo-pressed bg-background/50 space-y-2">
                                                                      <div className="flex justify-between gap-2">
                                                                         <p className="text-sm font-bold text-foreground leading-tight">{q.question}</p>
@@ -454,7 +456,7 @@ export default function ImprovePage() {
                                                         </CardTitle>
                                                     </CardHeader>
                                                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-2">
-                                                        {questions.tips.map((tip, i) => (
+                                                        {questions.tips.map((tip: string, i: number) => (
                                                             <p key={i} className="text-xs font-medium text-emerald-700/80 leading-relaxed px-3 py-2 rounded-lg bg-background/50">
                                                                 • {tip}
                                                             </p>

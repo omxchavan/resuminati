@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import ATSScoreChart from "@/components/ATSScoreChart";
@@ -49,8 +49,9 @@ interface AnalysisData {
 import { useResume } from "@/components/ResumeProvider";
 
 export default function DashboardPage() {
-    const { resumeData, isLoaded } = useResume();
-    const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
+    const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
+    const analysisData = analyses.dashboard;
+    const analysis = analysisData;
     const [analyzing, setAnalyzing] = useState(false);
 
     const analyzeResume = async () => {
@@ -67,7 +68,7 @@ export default function DashboardPage() {
             });
             const data = await res.json();
             if (data.success) {
-                setAnalysis(data.analysis);
+                setAnalysis("dashboard", data.analysis);
             }
         } catch (error) {
             console.error("Analysis failed:", error);
@@ -75,6 +76,13 @@ export default function DashboardPage() {
             setAnalyzing(false);
         }
     };
+
+    // Auto-analyze if resume exists but no analysis data
+    useEffect(() => {
+        if (resumeData && !analysisData && !analyzing) {
+            analyzeResume();
+        }
+    }, [resumeData, analysisData]);
 
     if (!isLoaded) {
         return (
@@ -145,7 +153,7 @@ export default function DashboardPage() {
                                 </Button>
 
                                 {/* Quick Stats */}
-                                {analysis && (
+                                {analysisData && (
                                     <Card className="neo">
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-3 text-lg font-bold">
@@ -163,24 +171,24 @@ export default function DashboardPage() {
                                             <div className="flex items-center justify-between p-3 rounded-2xl neo-pressed bg-background/50">
                                                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Action Items</span>
                                                 <span className="font-bold text-french-blue dark:text-cool-sky text-lg">
-                                                    {analysis.suggestions?.length || 0}
+                                                    {analysisData.suggestions?.length || 0}
                                                 </span>
                                             </div>
                                             <div className="flex flex-col gap-2 p-3 rounded-2xl neo-pressed bg-background/50">
                                                 <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-1">Impact Level</span>
                                                 <div className="flex items-center justify-between">
                                                     <Badge className={`px-4 py-1 text-sm font-bold rounded-lg ${
-                                                        analysis.atsScore >= 80
+                                                        analysisData.atsScore >= 80
                                                             ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                                                            : analysis.atsScore >= 60
+                                                            : analysisData.atsScore >= 60
                                                                 ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
                                                                 : "bg-red-500/10 text-red-600 dark:text-red-400"
                                                     }`}>
-                                                        {analysis.atsScore >= 80 ? "Premium" : analysis.atsScore >= 60 ? "Moderate" : "Needs Polish"}
+                                                        {analysisData.atsScore >= 80 ? "Premium" : analysisData.atsScore >= 60 ? "Moderate" : "Needs Polish"}
                                                     </Badge>
-                                                    {analysis.percentile && (
+                                                    {analysisData.percentile && (
                                                         <span className="text-xs font-bold text-french-blue dark:text-cool-sky">
-                                                            Top {100 - analysis.percentile}%
+                                                            Top {100 - analysisData.percentile}%
                                                         </span>
                                                     )}
                                                 </div>
@@ -231,7 +239,7 @@ export default function DashboardPage() {
 
                     {/* ATS Score Analysis */}
                     <AnimatePresence>
-                        {analysis && (
+                        {analysisData && (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -253,19 +261,19 @@ export default function DashboardPage() {
                                     <CardContent className="pt-10">
                                         <ATSScoreChart
                                             scores={{
-                                                formatting: analysis.formatting,
-                                                keywords: analysis.keywords,
-                                                impact: analysis.impact,
-                                                readability: analysis.readability,
-                                                skills: analysis.skills,
+                                                formatting: analysisData.formatting,
+                                                keywords: analysisData.keywords,
+                                                impact: analysisData.impact,
+                                                readability: analysisData.readability,
+                                                skills: analysisData.skills,
                                             }}
-                                            overallScore={analysis.atsScore}
+                                            overallScore={analysisData.atsScore}
                                         />
                                     </CardContent>
                                 </Card>
 
                                  {/* Optimization Roadmap & Quantified Impact */}
-                                 {analysis.suggestions && analysis.suggestions.length > 0 && (
+                                 {analysisData.suggestions && analysisData.suggestions.length > 0 && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <Card className="neo h-full">
                                             <CardHeader className="pb-4">
@@ -276,7 +284,7 @@ export default function DashboardPage() {
                                             </CardHeader>
                                             <CardContent>
                                                 <div className="space-y-4">
-                                                    {analysis.suggestions.map((suggestion, i) => (
+                                                    {analysisData.suggestions.map((suggestion: string, i: number) => (
                                                         <div
                                                             key={i}
                                                             className="flex items-start gap-4 rounded-2xl neo-pressed p-4 group transition-all"
@@ -292,7 +300,7 @@ export default function DashboardPage() {
                                         </Card>
 
                                         {/* Impact Metrics */}
-                                        {analysis.impactMetrics && analysis.impactMetrics.length > 0 && (
+                                        {analysisData.impactMetrics && analysisData.impactMetrics.length > 0 && (
                                             <Card className="neo h-full">
                                                 <CardHeader className="pb-4">
                                                     <CardTitle className="flex items-center gap-3 text-xl font-bold text-emerald-600 dark:text-emerald-400">
@@ -302,7 +310,7 @@ export default function DashboardPage() {
                                                 </CardHeader>
                                                 <CardContent>
                                                     <div className="space-y-4">
-                                                        {analysis.impactMetrics.map((metric, i) => (
+                                                        {analysisData.impactMetrics.map((metric: string, i: number) => (
                                                             <div
                                                                 key={i}
                                                                 className="flex items-start gap-4 rounded-2xl neo-pressed p-4 bg-emerald-500/5 group transition-all"
@@ -332,9 +340,9 @@ export default function DashboardPage() {
                                     </CardHeader>
                                     <CardContent className="pt-4">
                                         <FeedbackSection
-                                            strengths={analysis.strengths || []}
-                                            weaknesses={analysis.weaknesses || []}
-                                            improvements={analysis.improvements || []}
+                                            strengths={analysisData.strengths || []}
+                                            weaknesses={analysisData.weaknesses || []}
+                                            improvements={analysisData.improvements || []}
                                         />
                                     </CardContent>
                                 </Card>

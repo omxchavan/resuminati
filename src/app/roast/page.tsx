@@ -22,8 +22,8 @@ interface RoastResponse {
 }
 
 export default function RoastPage() {
-    const { resumeData, isLoaded } = useResume();
-    const [roast, setRoast] = useState<RoastResponse | null>(null);
+    const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
+    const roast = analyses.roast;
     const [roasting, setRoasting] = useState(false);
     const [intensity, setIntensity] = useState<"mild" | "medium" | "brutal">("medium");
 
@@ -45,7 +45,7 @@ export default function RoastPage() {
             });
             const data = await res.json();
             if (data.success) {
-                setRoast(data.roast);
+                setAnalysis("roast", data.roast);
             }
         } catch (error) {
             console.error("Roast failed:", error);
