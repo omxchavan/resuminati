@@ -1,5 +1,6 @@
 import mammoth from "mammoth";
-import * as pdf from "pdf-parse";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdfParse = require("pdf-parse");
 
 /**
  * Clean and normalize text extracted from documents
@@ -40,13 +41,11 @@ function cleanText(text: string): string {
 
 export async function parsePDF(buffer: Buffer): Promise<string> {
     try {
-        // Handle different export styles of pdf-parse for compatibility
-        const parseFunction = (pdf as any).default || pdf;
-        const data = await parseFunction(buffer);
+        const data = await pdfParse(buffer);
         return cleanText(data.text);
-    } catch (error) {
-        console.error("PDF parse error:", error);
-        throw new Error("Failed to parse PDF file");
+    } catch (error: any) {
+        console.error("PDF parse error detailed:", error);
+        throw new Error(`Failed to parse PDF file: ${error.message || "Unknown error"}`);
     }
 }
 
@@ -54,9 +53,9 @@ export async function parseDOCX(buffer: Buffer): Promise<string> {
     try {
         const result = await mammoth.extractRawText({ buffer });
         return cleanText(result.value);
-    } catch (error) {
-        console.error("DOCX parse error:", error);
-        throw new Error("Failed to parse DOCX file");
+    } catch (error: any) {
+        console.error("DOCX parse error detailed:", error);
+        throw new Error(`Failed to parse DOCX file: ${error.message || "Unknown error"}`);
     }
 }
 
