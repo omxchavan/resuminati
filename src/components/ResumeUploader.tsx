@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FileText, X, Loader2, CheckCircle2 } from "lucide-react";
+import { Upload, X, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useResume } from "@/components/ResumeProvider";
 
@@ -88,24 +88,24 @@ export default function ResumeUploader({
             <div className="w-full">
                 <div
                     {...getRootProps()}
-                    className={`relative flex items-center gap-3 rounded-xl border-none p-4 transition-all cursor-pointer neo-sm active:neo-pressed
-            ${isDragActive ? "neo-pressed bg-french-blue/5" : "hover:neo-pressed hover:bg-white/5"}
-            ${uploading ? "pointer-events-none opacity-50" : ""}`}
+                    className={`relative flex items-center gap-4 rounded-full border-none px-6 py-4 transition-all cursor-pointer m3-elev-0 bg-m3-surface-variant/20 hover:bg-m3-surface-variant/40
+                        ${isDragActive ? "bg-m3-primary/5 ring-2 ring-m3-primary" : ""}
+                        ${uploading ? "pointer-events-none opacity-50" : ""}`}
                 >
                     <input {...getInputProps()} />
                     {uploading ? (
-                        <Loader2 className="h-5 w-5 animate-spin text-french-blue dark:text-cool-sky" />
+                        <Loader2 className="h-5 w-5 animate-spin text-m3-primary" />
                     ) : globalResumeData ? (
-                        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                     ) : (
-                        <Upload className="h-5 w-5 text-muted-foreground" />
+                        <Upload className="h-5 w-5 text-m3-on-surface-variant" />
                     )}
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className="text-sm font-black text-m3-on-surface-variant truncate">
                         {uploading
-                            ? "Processing..."
+                            ? "PROCESSING..."
                             : globalResumeData
                                 ? globalResumeData.fileName
-                                : "Drop resume or click to upload"}
+                                : "UPLOAD RESUME"}
                     </span>
                     {globalResumeData && (
                         <button
@@ -113,14 +113,14 @@ export default function ResumeUploader({
                                 e.stopPropagation();
                                 reset();
                             }}
-                            className="ml-auto p-1 rounded-full hover:bg-muted transition-colors"
+                            className="ml-auto p-1.5 rounded-full hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors"
                         >
-                            <X className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                            <X className="h-4 w-4" />
                         </button>
                     )}
                 </div>
                 {error && (
-                    <p className="mt-2 text-sm text-destructive">{error}</p>
+                    <p className="mt-2 text-[10px] font-black uppercase text-red-500 tracking-widest text-center">{error}</p>
                 )}
             </div>
         );
@@ -132,74 +132,79 @@ export default function ResumeUploader({
                 {globalResumeData ? (
                     <motion.div
                         key="uploaded"
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="flex flex-col items-center gap-4 rounded-2xl neo-pressed p-8 sm:p-12"
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="flex flex-col items-center gap-6 rounded-[2.5rem] bg-m3-surface-variant/10 p-10 text-center"
                     >
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full neo-sm bg-emerald-500/5">
-                            <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 m3-elev-1">
+                            <CheckCircle2 className="h-10 w-10" />
                         </div>
-                        <div className="text-center">
-                            <p className="font-bold text-lg text-foreground">{globalResumeData.fileName}</p>
-                            <p className="text-sm text-muted-foreground font-medium mt-1">
-                                Successfully uploaded & parsed
+                        <div>
+                            <p className="font-black text-2xl text-m3-on-surface tracking-tight">{globalResumeData.fileName}</p>
+                            <p className="text-sm text-m3-on-surface-variant font-bold mt-2 uppercase tracking-widest opacity-60">
+                                Vectorized & Ready
                             </p>
                         </div>
-                        <Button variant="outline" size="sm" onClick={reset} className="rounded-xl px-6 h-10 mt-4 neo-interactive hover:neo-pressed border-none">
-                            Upload Different Resume
+                        <Button 
+                            variant="outline" 
+                            onClick={reset} 
+                            className="rounded-full px-8 h-12 mt-4 bg-transparent border-m3-outline-variant text-m3-on-surface-variant font-black text-xs uppercase tracking-widest hover:bg-m3-surface-variant/30"
+                        >
+                            Replace Document
                         </Button>
                     </motion.div>
                 ) : (
                     <motion.div
                         key="dropzone"
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
                     >
                         <div
                             {...getRootProps()}
-                            className={`relative flex flex-col items-center gap-6 rounded-3xl p-12 transition-all cursor-pointer neo active:neo-pressed
-                ${isDragActive ? "neo-pressed scale-[0.98]" : "hover:neo-pressed"}
-                ${uploading ? "pointer-events-none opacity-50" : ""}`}
+                            className={`relative flex flex-col items-center gap-8 rounded-[3rem] p-16 transition-all cursor-pointer border-2 border-dashed
+                                ${isDragActive 
+                                    ? "bg-m3-primary/5 border-m3-primary scale-95" 
+                                    : "bg-m3-surface border-m3-outline-variant hover:border-m3-primary/50 hover:bg-m3-primary/5"}
+                                ${uploading ? "pointer-events-none opacity-50" : ""}`}
                         >
                             <input {...getInputProps()} />
 
                             {uploading ? (
                                 <>
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full neo-pressed">
-                                        <Loader2 className="h-10 w-10 animate-spin text-french-blue dark:text-cool-sky" />
+                                    <div className="relative">
+                                        <Loader2 className="h-20 w-20 animate-spin text-m3-primary" />
+                                        <div className="absolute inset-0 bg-m3-primary/10 blur-3xl animate-pulse rounded-full" />
                                     </div>
                                     <div className="text-center">
-                                        <p className="font-bold text-xl text-foreground">
-                                            Processing...
+                                        <p className="font-black text-3xl text-m3-on-surface tracking-tighter">
+                                            Semantic Parsing...
                                         </p>
-                                        <p className="text-sm text-muted-foreground font-medium mt-2">
-                                            Extracting details with AI
+                                        <p className="text-sm text-m3-on-surface-variant font-black uppercase tracking-widest mt-3 opacity-60">
+                                            Structuring data for AI analysis
                                         </p>
                                     </div>
                                 </>
                             ) : (
                                 <>
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full neo-sm text-french-blue dark:text-cool-sky">
+                                    <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-m3-surface m3-elev-1 text-m3-primary">
                                         <Upload className="h-10 w-10" />
                                     </div>
                                     <div className="text-center">
-                                        <p className="font-bold text-xl text-foreground">
+                                        <p className="font-black text-3xl text-m3-on-surface tracking-tighter">
                                             {isDragActive
-                                                ? "Drop it here!"
-                                                : "Upload Your Resume"}
+                                                ? "RELEASE TO UPLOAD"
+                                                : "UPLOAD RESUME"}
                                         </p>
-                                        <p className="text-sm text-muted-foreground font-medium mt-2 max-w-xs">
-                                            PDF or DOCX supported. Your privacy is our priority.
+                                        <p className="text-base text-m3-on-surface-variant font-bold mt-3 max-w-sm opacity-60">
+                                            PDF or DOCX supported. Your data remains local and secure.
                                         </p>
                                     </div>
                                     <Button
-                                        variant="default"
-                                        size="lg"
-                                        className="mt-2 h-12 px-8 rounded-2xl font-bold"
+                                        className="m3-button-filled h-14 px-10 rounded-full font-black text-sm uppercase tracking-widest"
                                     >
-                                        Browse Files
+                                        CHOOSE FILE
                                     </Button>
                                 </>
                             )}
@@ -212,7 +217,7 @@ export default function ResumeUploader({
                 <motion.p
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 text-center text-sm font-bold text-destructive"
+                    className="mt-6 text-center text-xs font-black text-red-600 uppercase tracking-widest"
                 >
                     {error}
                 </motion.p>

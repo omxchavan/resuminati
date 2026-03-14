@@ -66,18 +66,18 @@ export default function ATSScoreChart({
     ];
 
     const getScoreColor = (score: number) => {
-        if (score >= 80) return "text-emerald-500 dark:text-emerald-400";
-        if (score >= 60) return "text-french-blue dark:text-cool-sky";
-        if (score >= 40) return "text-slate-500 dark:text-slate-400";
-        return "text-destructive";
+        if (score >= 80) return "text-emerald-600 dark:text-emerald-400";
+        if (score >= 60) return "text-m3-primary";
+        if (score >= 40) return "text-m3-on-surface-variant";
+        return "text-red-500";
     };
 
     return (
         <div className="flex flex-col items-center gap-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center w-full">
                 {/* Overall Score Circle */}
-                <div className="flex flex-col items-center justify-center p-8 rounded-3xl neo-pressed bg-background/30">
-                    <div className="relative flex h-48 w-48 items-center justify-center mb-6">
+                <div className="flex flex-col items-center justify-center p-10 rounded-[3rem] bg-m3-surface-variant/10 m3-elev-0 border border-m3-outline-variant/30">
+                    <div className="relative flex h-56 w-56 items-center justify-center mb-8">
                         <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120">
                             <circle
                                 cx="60"
@@ -85,74 +85,70 @@ export default function ATSScoreChart({
                                 r="54"
                                 fill="none"
                                 stroke="currentColor"
-                                strokeWidth="6"
-                                className="text-muted/10"
+                                strokeWidth="4"
+                                className="text-m3-outline-variant/20"
                             />
-                            <circle
+                            <motion.circle
                                 cx="60"
                                 cy="60"
                                 r="54"
                                 fill="none"
-                                stroke="url(#scoreGradient)"
+                                stroke="var(--md-sys-color-primary)"
                                 strokeWidth="10"
                                 strokeLinecap="round"
-                                strokeDasharray={`${(overallScore / 100) * 339.292} 339.292`}
-                                className="transition-all duration-1000 ease-out"
+                                strokeDasharray="339.292"
+                                initial={{ strokeDashoffset: 339.292 }}
+                                animate={{ strokeDashoffset: 339.292 - (overallScore / 100) * 339.292 }}
+                                transition={{ duration: 1.5, ease: "easeOut" }}
                             />
-                            <defs>
-                                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stopColor="#2a4494" />
-                                    <stop offset="100%" stopColor="#5da9e9" />
-                                </linearGradient>
-                            </defs>
                         </svg>
                         <div className="text-center z-10">
                             <motion.span 
                                 key={overallScore}
                                 initial={{ opacity: 0, scale: 0.5 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className={`text-6xl font-black tracking-tighter ${getScoreColor(overallScore)}`}
+                                className={`text-7xl font-black tracking-tighter ${getScoreColor(overallScore)}`}
                             >
                                 {overallScore}
                             </motion.span>
-                            <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1">ATS Score</p>
+                            <p className="text-xs font-black text-m3-on-surface-variant/60 uppercase tracking-[0.2em] mt-2">ATS Index</p>
                         </div>
                     </div>
                     
                     <div className="flex gap-4 w-full">
-                        <div className="flex-1 p-3 rounded-2xl neo-sm text-center">
-                            <p className="text-xs text-muted-foreground font-bold mb-1">PERCENTILE</p>
-                            <p className="text-xl font-black text-french-blue dark:text-cool-sky">Top 15%</p>
+                        <div className="flex-1 p-5 rounded-[2rem] bg-m3-surface m3-elev-1 text-center">
+                            <p className="text-[10px] text-m3-on-surface-variant font-black uppercase tracking-widest mb-1 opacity-50">PERCENTILE</p>
+                            <p className="text-xl font-black text-m3-primary">TOP 15%</p>
                         </div>
-                        <div className="flex-1 p-3 rounded-2xl neo-sm text-center">
-                            <p className="text-xs text-muted-foreground font-bold mb-1">STRENGTH</p>
-                            <p className="text-xl font-black text-emerald-500">Strong</p>
+                        <div className="flex-1 p-5 rounded-[2rem] bg-m3-surface m3-elev-1 text-center">
+                            <p className="text-[10px] text-m3-on-surface-variant font-black uppercase tracking-widest mb-1 opacity-50">STRENGTH</p>
+                            <p className="text-xl font-black text-emerald-600">STRONG</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Radar Chart */}
-                <div className="h-[350px] w-full neo rounded-3xl p-4 overflow-visible relative">
-                    <div className="absolute top-4 right-4 flex flex-col gap-1 text-[10px] font-bold uppercase tracking-tight z-10">
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-french-blue" />
-                            <span className="text-foreground">You</span>
+                <div className="h-[400px] w-full bg-m3-surface m3-elev-1 rounded-[3rem] p-8 border border-m3-outline-variant/30 relative">
+                    <div className="absolute top-8 right-8 flex flex-col gap-2 text-[10px] font-black uppercase tracking-widest z-10 opacity-60">
+                        <div className="flex items-center gap-3">
+                            <div className="w-2.5 h-2.5 rounded-full bg-m3-primary" />
+                            <span className="text-m3-on-surface">You</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
-                            <span className="text-muted-foreground/60">Average</span>
+                        <div className="flex items-center gap-3">
+                            <div className="w-2.5 h-2.5 rounded-full bg-m3-on-surface-variant/20" />
+                            <span className="text-m3-on-surface-variant">Market</span>
                         </div>
-                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500/50" />
-                            <span className="text-emerald-500/50">Top 10%</span>
+                         <div className="flex items-center gap-3">
+                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30" />
+                            <span className="text-emerald-500/50">Elite</span>
                         </div>
                     </div>
                     <ResponsiveContainer width="100%" height="100%">
                         <RadarChart data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
-                            <PolarGrid stroke="currentColor" className="text-muted/20" />
+                            <PolarGrid stroke="currentColor" className="text-m3-outline-variant opacity-30" />
                             <PolarAngleAxis
                                 dataKey="category"
-                                tick={{ fill: "currentColor", fontSize: 10, className: "text-muted-foreground font-bold uppercase" }}
+                                tick={{ fill: "currentColor", fontSize: 10, className: "text-m3-on-surface-variant font-black uppercase tracking-widest" }}
                             />
                             <PolarRadiusAxis
                                 angle={90}
@@ -164,13 +160,13 @@ export default function ATSScoreChart({
                                 content={({ active, payload }) => {
                                     if (active && payload && payload.length) {
                                         return (
-                                            <div className="neo-glass p-4 rounded-2xl border-none shadow-2xl backdrop-blur-md">
-                                                <p className="font-bold mb-2 text-sm text-french-blue dark:text-cool-sky border-b border-border/20 pb-1">{payload[0].payload.category}</p>
-                                                <div className="space-y-1.5">
+                                            <div className="bg-m3-surface m3-elev-4 p-5 rounded-2xl border border-m3-outline-variant/30 backdrop-blur-xl">
+                                                <p className="font-black mb-3 text-xs text-m3-primary uppercase tracking-widest border-b border-m3-outline-variant/30 pb-2">{payload[0].payload.category}</p>
+                                                <div className="space-y-2">
                                                     {payload.map((p: any) => (
-                                                        <div key={p.name} className="flex items-center justify-between gap-6">
-                                                            <span className="text-[11px] font-bold text-muted-foreground">{p.name}:</span>
-                                                            <span className="text-xs font-black">{p.value}</span>
+                                                        <div key={p.name} className="flex items-center justify-between gap-8">
+                                                            <span className="text-[10px] font-black text-m3-on-surface-variant/60 uppercase">{p.name}:</span>
+                                                            <span className="text-sm font-black text-m3-on-surface">{p.value}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -192,43 +188,44 @@ export default function ATSScoreChart({
                             <Radar
                                 name="Market Average"
                                 dataKey="marketAvg"
-                                stroke="currentColor"
-                                fill="currentColor"
+                                stroke="var(--md-sys-color-on-surface-variant)"
+                                fill="var(--md-sys-color-on-surface-variant)"
                                 fillOpacity={0.05}
-                                className="text-muted-foreground/30"
                                 strokeWidth={1}
                             />
                             <Radar
                                 name="Your Score"
                                 dataKey="yourScore"
-                                stroke="#2a4494"
-                                fill="#2a4494"
-                                fillOpacity={0.3}
-                                strokeWidth={3}
+                                stroke="var(--md-sys-color-primary)"
+                                fill="var(--md-sys-color-primary)"
+                                fillOpacity={0.2}
+                                strokeWidth={4}
                             />
                         </RadarChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
-            {/* Individual Scores Comparison Table */}
-            <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* Individual Scores Comparison grid */}
+            <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-6">
                 {data.map((item) => (
-                    <div key={item.category} className="neo-sm p-4 rounded-2xl text-center flex flex-col items-center">
-                        <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mb-3 block">{item.category}</span>
-                        <div className="flex items-baseline gap-1 mb-2">
-                             <span className={`text-3xl font-black ${getScoreColor(item.yourScore)}`}>{item.yourScore}</span>
-                             <span className="text-xs text-muted-foreground font-bold">/ 100</span>
+                    <div key={item.category} className="m3-card !bg-m3-surface-variant/10 border-none !p-6 flex flex-col items-center hover:bg-m3-surface-variant/20 transition-all">
+                        <span className="text-[10px] text-m3-on-surface-variant font-black uppercase tracking-widest mb-4 block opacity-60">{item.category}</span>
+                        <div className="flex items-baseline gap-1 mb-3">
+                             <span className={`text-4xl font-black ${getScoreColor(item.yourScore)}`}>{item.yourScore}</span>
+                             <span className="text-xs text-m3-on-surface-variant/40 font-black">/ 100</span>
                         </div>
-                        <div className="w-full h-1 bg-muted/20 rounded-full overflow-hidden mb-3">
-                            <div 
-                                className="h-full bg-french-blue transition-all duration-1000" 
-                                style={{ width: `${item.yourScore}%` }} 
+                        <div className="w-full h-1.5 bg-m3-outline-variant/20 rounded-full overflow-hidden mb-4">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${item.yourScore}%` }}
+                                transition={{ duration: 1, delay: 0.2 }}
+                                className="h-full bg-m3-primary rounded-full transition-all" 
                             />
                         </div>
-                        <div className="flex justify-between w-full text-[9px] font-black uppercase tracking-tighter text-muted-foreground/60">
-                            <span>Avg: {item.marketAvg}</span>
-                            <span className="text-emerald-500/70">Top: {item.topCandidates}</span>
+                        <div className="flex justify-between w-full text-[9px] font-black uppercase tracking-widest text-m3-on-surface-variant/40">
+                            <span>AVG: {item.marketAvg}</span>
+                            <span className="text-emerald-500/70">TOP: {item.topCandidates}</span>
                         </div>
                     </div>
                 ))}

@@ -15,8 +15,11 @@ function cleanText(text: string): string {
         .replace(/\r/g, "\n")
         // Remove common random characters/artifacts mentioned by user
         .replace(/\u0000/g, "") // Null character
-        .replace(/\uFFFD/g, "") // Replacement character (often shown as ?)
-        .replace(/\u00B0/g, "") // Degree symbol
+        .replace(/\uFFFD/g, "") // Replacement character
+        .replace(/\u00B0/g, "") // Degree symbol (°)
+        .replace(/\u2021/g, "") // Double dagger (‡)
+        .replace(/\u0152/g, "OE") // Latin Capital Ligature OE (Œ)
+        .replace(/\u0153/g, "oe") // Latin Small Ligature OE (œ)
         .replace(/\u00AD/g, "") // Soft hyphen
         // Replace common ligatures with standard characters
         .replace(/\uFB00/g, "ff")
@@ -24,11 +27,11 @@ function cleanText(text: string): string {
         .replace(/\uFB02/g, "fl")
         .replace(/\uFB03/g, "ffi")
         .replace(/\uFB04/g, "ffl")
-        // Normalize bullets to a simple dash for better AI processing
+        // Normalize bullets to a simple dash
         .replace(/[\u2022\u2023\u25E6\u2043\u2219\u2013\u2014]/g, "-")
         // Remove other unusual control characters
         .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
-        // Clean up multiple spaces but keep single/double newlines
+        // Clean up multiple spaces
         .replace(/[ \t]+/g, " ")
         // Collapse 3+ newlines into 2
         .replace(/\n{3,}/g, "\n\n")

@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle2, XCircle, Lightbulb } from "lucide-react";
+import { CheckCircle2, XCircle, Lightbulb, Zap, Target, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface FeedbackSectionProps {
@@ -17,64 +17,70 @@ export default function FeedbackSection({
 }: FeedbackSectionProps) {
     return (
         <Tabs defaultValue="strengths" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-muted">
-                <TabsTrigger value="strengths" className="data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400">
-                    Strengths
+            <TabsList className="grid w-full grid-cols-3 bg-m3-surface-variant/30 rounded-2xl p-1 h-14 mb-8">
+                <TabsTrigger value="strengths" className="rounded-xl font-black text-xs uppercase tracking-widest data-[state=active]:bg-emerald-500 data-[state=active]:text-white transition-all">
+                    Assets
                 </TabsTrigger>
-                <TabsTrigger value="weaknesses" className="data-[state=active]:bg-destructive/10 data-[state=active]:text-destructive">
-                    Weaknesses
+                <TabsTrigger value="weaknesses" className="rounded-xl font-black text-xs uppercase tracking-widest data-[state=active]:bg-red-500 data-[state=active]:text-white transition-all">
+                    Liabilities
                 </TabsTrigger>
-                <TabsTrigger value="improvements" className="data-[state=active]:bg-french-blue/10 data-[state=active]:text-french-blue dark:data-[state=active]:text-cool-sky">
-                    Improvements
+                <TabsTrigger value="improvements" className="rounded-xl font-black text-xs uppercase tracking-widest data-[state=active]:bg-m3-primary data-[state=active]:text-m3-on-primary transition-all">
+                    Strategy
                 </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="strengths" className="mt-4">
-                <div className="space-y-3">
+            <TabsContent value="strengths" className="transition-all">
+                <div className="space-y-4">
                     {strengths.map((item, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-emerald-500/10 bg-emerald-500/5 dark:bg-emerald-500/10 p-3"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="flex items-start gap-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 p-5 border border-emerald-100/50"
                         >
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500 dark:text-emerald-400" />
-                            <p className="text-sm text-foreground/80">{item}</p>
+                            <div className="h-8 w-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                                <CheckCircle2 className="h-5 w-5" />
+                            </div>
+                            <p className="text-base font-bold text-m3-on-surface-variant opacity-80 leading-relaxed">{item}</p>
                         </motion.div>
                     ))}
                 </div>
             </TabsContent>
 
-            <TabsContent value="weaknesses" className="mt-4">
-                <div className="space-y-3">
+            <TabsContent value="weaknesses">
+                <div className="space-y-4">
                     {weaknesses.map((item, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-destructive/10 bg-destructive/5 p-3"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="flex items-start gap-4 rounded-2xl bg-red-50/50 dark:bg-red-950/20 p-5 border border-red-100/50"
                         >
-                            <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-                            <p className="text-sm text-foreground/80">{item}</p>
+                            <div className="h-8 w-8 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                <XCircle className="h-5 w-5" />
+                            </div>
+                            <p className="text-base font-bold text-m3-on-surface-variant opacity-80 leading-relaxed">{item}</p>
                         </motion.div>
                     ))}
                 </div>
             </TabsContent>
 
-            <TabsContent value="improvements" className="mt-4">
-                <div className="space-y-3">
+            <TabsContent value="improvements">
+                <div className="space-y-4">
                     {improvements.map((item, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="flex items-start gap-3 rounded-lg border border-french-blue/10 bg-french-blue/5 dark:bg-french-blue/10 p-3"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="flex items-start gap-4 rounded-2xl bg-m3-primary-container/20 p-5 border border-m3-primary-container/30"
                         >
-                            <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-french-blue dark:text-cool-sky" />
-                            <p className="text-sm text-foreground/80">{item}</p>
+                            <div className="h-8 w-8 rounded-xl bg-m3-primary-container text-m3-primary flex items-center justify-center shrink-0">
+                                <Lightbulb className="h-5 w-5" />
+                            </div>
+                            <p className="text-base font-bold text-m3-on-surface-variant opacity-80 leading-relaxed">{item}</p>
                         </motion.div>
                     ))}
                 </div>

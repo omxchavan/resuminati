@@ -5,321 +5,260 @@ import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
-  Target,
-  Loader2,
-  Sparkles,
-  FileText,
-  Workflow,
-  TrendingUp,
+    Zap,
+    Loader2,
+    FileText,
+    Target,
+    CheckCircle2,
+    XCircle,
+    ArrowRight,
+    Sparkles,
+    Briefcase,
 } from "lucide-react";
 import { useResume } from "@/components/ResumeProvider";
-import { Separator } from "@/components/ui/separator";
-
-interface MatchResult {
-  fitScore: number;
-  matchedKeywords: string[];
-  missingKeywords: string[];
-  recommendations: string[];
-  interviewProbability: number;
-  summary: string;
-}
 
 export default function JobMatchPage() {
-  const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
-  const jobMatchData = analyses.jobMatch;
-  const [jobDescription, setJobDescription] = useState("");
-  const [matching, setMatching] = useState(false);
-  const result = jobMatchData?.result || null;
+    const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
+    const matchData = analyses.jobMatch;
+    const [jobDescription, setJobDescription] = useState("");
+    const [matching, setMatching] = useState(false);
 
-  // Sync state when data is loaded from localStorage
-  useEffect(() => {
-    if (isLoaded && jobMatchData?.jobDescription) {
-      setJobDescription(jobMatchData.jobDescription);
-    }
-  }, [isLoaded, jobMatchData?.jobDescription]);
+    // Sync jobDescription from matchData if available
+    useEffect(() => {
+        if (isLoaded && analyses.jobMatch?.jobDescription) {
+            setJobDescription(analyses.jobMatch.jobDescription);
+        }
+    }, [isLoaded, analyses.jobMatch]);
 
-  const calculateMatch = async () => {
-    if (!resumeData || !jobDescription) return;
-    setMatching(true);
-    try {
-      const res = await fetch("/api/job-match", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          resumeText: resumeData.parsedText,
-          jobDescription,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setAnalysis("jobMatch", {
-          jobDescription,
-          result: data.match
-        });
-      }
-    } catch (error) {
-      console.error("Match failed:", error);
-    } finally {
-      setMatching(false);
-    }
-  };
+    const findMatch = async () => {
+        if (!resumeData || !jobDescription) return;
+        setMatching(true);
+        try {
+            const res = await fetch("/api/job-match", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    resumeText: resumeData.parsedText,
+                    jobDescription,
+                }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setAnalysis("jobMatch", {
+                    ...data.match,
+                    jobDescription // Save the JD too
+                });
+            }
+        } catch (error) {
+            console.error("Match failed:", error);
+        } finally {
+            setMatching(false);
+        }
+    };
 
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-french-blue" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-10 text-center"
-      >
-        <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl neo-sm mb-6">
-          <Target className="h-6 w-6 text-french-blue dark:text-cool-sky" />
-        </div>
-        <h1 className="text-4xl font-bold tracking-tight mb-4 text-center">
-          <span className="text-foreground">Precision </span>
-          <span className="bg-gradient-to-r from-french-blue to-cool-sky bg-clip-text text-transparent">
-            Job Matching
-          </span>
-        </h1>
-        <p className="mt-2 text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
-          Compare your resume against any job description to see how well you rank and what's missing.
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Side: Inputs */}
-        <div className="lg:col-span-12 space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Resume Upload Column */}
-            <div className="space-y-6">
-              <Card className="neo p-2">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-3 text-xl font-bold">
-                    <FileText className="h-6 w-6 text-french-blue dark:text-cool-sky" />
-                    1. Select Resume
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResumeUploader />
-                </CardContent>
-              </Card>
-
-              {resumeData && (
-                <div className="p-8 rounded-3xl neo-pressed bg-background/30 border-none">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="h-8 w-8 rounded-xl neo-sm flex items-center justify-center">
-                      <Sparkles className="h-4 w-4 text-french-blue" />
-                    </div>
-                    <h3 className="font-bold text-foreground">Pro Tip</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                    ATS systems prioritize keywords. Ensure your technical skills match exactly as written in the job post.
-                  </p>
-                </div>
-              )}
+    if (!isLoaded) {
+        return (
+            <div className="flex items-center justify-center min-h-[60vh] bg-m3-surface">
+                <Loader2 className="h-10 w-10 animate-spin text-m3-primary" />
             </div>
+        );
+    }
 
-            {/* Job Description Column */}
-            <Card className="neo p-2">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-3 text-xl font-bold">
-                  <Workflow className="h-6 w-6 text-french-blue dark:text-cool-sky" />
-                  2. Job Description
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <textarea
-                  placeholder="Paste the full job description here..."
-                  className="w-full h-48 rounded-2xl neo-pressed bg-transparent p-6 text-sm text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:neo-pressed transition-all border-none"
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                />
-                <Button
-                  onClick={calculateMatch}
-                  disabled={matching || !resumeData || !jobDescription}
-                  className="w-full gap-3 text-french-blue dark:text-cool-sky font-bold h-14 rounded-2xl neo-interactive hover:neo-pressed border-none bg-background text-base shadow-none"
-                >
-                  {matching ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <Target className="h-5 w-5" />
-                  )}
-                  {matching ? "Analyzing Fit..." : "Calculate Match Score"}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+    return (
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 bg-m3-surface min-h-screen">
+            {/* Header */}
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-12"
+            >
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-m3-primary-container text-m3-primary m3-elev-1">
+                        <Target className="h-6 w-6" />
+                    </div>
+                    <span className="text-sm font-black text-m3-primary uppercase tracking-widest">Precision Alignment</span>
+                </div>
+                <h1 className="text-5xl font-black tracking-tight text-m3-on-surface">
+                    Job Description <span className="text-m3-primary italic">Match</span>
+                </h1>
+                <p className="mt-4 text-xl text-m3-on-surface-variant font-medium max-w-2xl opacity-80">
+                    Paste a job description to see exactly how your profile stacks up against the requirements.
+                </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Left Column - Input */}
+                <div className="lg:col-span-5 space-y-8">
+                    <Card className="m3-card !p-2 bg-m3-surface-variant/20 border-m3-outline-variant/50">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-4 text-xl font-black text-m3-on-surface">
+                                <FileText className="h-6 w-6 text-m3-primary" />
+                                1. Source Resume
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ResumeUploader />
+                        </CardContent>
+                    </Card>
+
+                    <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5">
+                        <CardHeader className="pb-6">
+                            <CardTitle className="flex items-center gap-4 text-xl font-black text-m3-on-surface">
+                                <Briefcase className="h-6 w-6 text-m3-primary" />
+                                2. Target Role
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <Textarea
+                                placeholder="Paste the job description here..."
+                                className="min-h-[300px] m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
+                                value={jobDescription}
+                                onChange={(e) => setJobDescription(e.target.value)}
+                            />
+                            <Button
+                                onClick={findMatch}
+                                disabled={matching || !resumeData || !jobDescription}
+                                className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
+                            >
+                                {matching ? (
+                                    <Loader2 className="h-6 w-6 animate-spin mr-3" />
+                                ) : (
+                                    <Zap className="h-6 w-6 mr-3" />
+                                )}
+                                {matching ? "Calculating Depth..." : "Calculate Fit Score"}
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Right Column - Results */}
+                <div className="lg:col-span-7">
+                    <AnimatePresence mode="wait">
+                        {matching ? (
+                            <motion.div
+                                key="loading"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="m3-card bg-m3-surface-variant/10 border-none h-full min-h-[600px] flex flex-col items-center justify-center p-12 text-center"
+                            >
+                                <div className="relative mb-10">
+                                    <Loader2 className="h-20 w-20 animate-spin text-m3-primary" />
+                                    <motion.div
+                                        animate={{ scale: [1, 2, 1], opacity: [0.1, 0.3, 0.1] }}
+                                        transition={{ duration: 3, repeat: Infinity }}
+                                        className="absolute inset-0 bg-m3-primary blur-3xl rounded-full"
+                                    />
+                                </div>
+                                <h3 className="text-3xl font-black mb-3">Syncing Semantic Vectors...</h3>
+                                <p className="text-xl text-m3-on-surface-variant font-bold opacity-70">Analyzing skill overlap and contextual relevance.</p>
+                            </motion.div>
+                        ) : matchData ? (
+                            <motion.div
+                                key="result"
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="space-y-8"
+                            >
+                                {/* Score Card */}
+                                <Card className="m3-card bg-m3-surface border-none m3-elev-2 overflow-hidden">
+                                    <div className="bg-m3-primary p-12 text-center relative">
+                                        <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-bl-[10rem]" />
+                                        <div className="relative">
+                                            <span className="text-xs font-black text-white/60 uppercase tracking-[0.3em] block mb-4">Overall Match Index</span>
+                                            {matchData.matchScore !== undefined && (
+                                                <div className="text-[7rem] font-black text-white leading-none tracking-tighter">
+                                                    {matchData.matchScore}<span className="text-3xl opacity-50 ml-1">%</span>
+                                                </div>
+                                            )}
+                                            {matchData.matchScore !== undefined && (
+                                                <Badge className="mt-8 px-6 py-2 bg-white/20 text-white rounded-full border-none font-black text-sm backdrop-blur-md">
+                                                    {matchData.matchScore >= 80 ? "EXCELLENT FIT" : matchData.matchScore >= 60 ? "STRONG CONTENDER" : "POTENTIAL GAP"}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <CardContent className="p-10">
+                                        <h4 className="text-xl font-black text-m3-on-surface mb-8">Executive Summary</h4>
+                                        <p className="text-lg font-medium text-m3-on-surface-variant leading-relaxed opacity-90 italic">
+                                            "{matchData.summary || matchData.result?.summary}"
+                                        </p>
+                                    </CardContent>
+                                </Card>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Success Indicators */}
+                                    <Card className="m3-card bg-emerald-50/50 dark:bg-emerald-950/20 border-none m3-elev-1">
+                                        <CardHeader>
+                                            <CardTitle className="text-lg font-black text-emerald-700 dark:text-emerald-400 flex items-center gap-3">
+                                                <CheckCircle2 className="h-6 w-6" />
+                                                Requirement Hits
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-4">
+                                                {(matchData.matchingSkills || matchData.result?.matchedKeywords)?.map((skill: string, i: number) => (
+                                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-m3-surface m3-elev-0 border border-emerald-100 dark:border-emerald-900/50">
+                                                        <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                                                        <span className="text-sm font-bold text-m3-on-surface-variant">{skill}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Skill Gaps */}
+                                    <Card className="m3-card bg-amber-50/50 dark:bg-amber-950/20 border-none m3-elev-1">
+                                        <CardHeader>
+                                            <CardTitle className="text-lg font-black text-amber-700 dark:text-amber-400 flex items-center gap-3">
+                                                <XCircle className="h-6 w-6" />
+                                                Identified Gaps
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-4">
+                                                {(matchData.missingSkills || matchData.result?.missingKeywords)?.map((skill: string, i: number) => (
+                                                    <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-m3-surface m3-elev-0 border border-amber-100 dark:border-amber-900/50">
+                                                        <div className="h-2 w-2 rounded-full bg-amber-500" />
+                                                        <span className="text-sm font-bold text-m3-on-surface-variant">{skill}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+
+                                {/* Optimization Path */}
+                                <Card className="m3-card bg-m3-surface-variant/20 border-none">
+                                    <CardHeader>
+                                        <CardTitle className="text-xl font-black text-m3-on-surface flex items-center gap-4">
+                                            <Sparkles className="h-7 w-7 text-m3-primary" />
+                                            Optimization Path
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-5">
+                                            {(matchData.recommendations || matchData.result?.recommendations)?.map((rec: string, i: number) => (
+                                                <div key={i} className="flex items-start gap-5 p-6 rounded-[2rem] bg-m3-surface m3-elev-1 border border-m3-outline-variant/10">
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-m3-primary-container text-m3-primary font-black m3-elev-1">
+                                                        {i + 1}
+                                                    </div>
+                                                    <p className="text-base font-bold text-m3-on-surface-variant leading-relaxed">{rec}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ) : (
+                            <div className="m3-card bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant/30 h-full min-h-[600px] flex flex-col items-center justify-center p-20 text-center" />
+                        )}
+                    </AnimatePresence>
+                </div>
+            </div>
         </div>
-
-        {/* Results Area */}
-        <AnimatePresence mode="wait">
-          {matching ? (
-            <motion.div
-              key="matching"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="lg:col-span-12"
-            >
-              <Card className="neo-pressed border-none py-24">
-                <CardContent className="flex flex-col items-center justify-center text-center">
-                  <div className="relative mb-8">
-                    <Loader2 className="h-16 w-16 animate-spin text-french-blue" />
-                    <motion.div 
-                      animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.3, 0.1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="absolute inset-0 bg-french-blue/30 blur-2xl rounded-full"
-                    />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-2">Calculating Compatibility...</h3>
-                  <p className="text-muted-foreground font-medium max-w-sm">Comparing semantically between your experience and requirements.</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ) : result ? (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="lg:col-span-12 space-y-8"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Score Circle */}
-                <Card className="neo border-none h-fit">
-                  <CardContent className="pt-10 flex flex-col items-center">
-                    <div className="relative h-48 w-48 mb-8">
-                      <svg className="h-full w-full" viewBox="0 0 100 100">
-                        <circle
-                          className="text-muted-foreground/5 stroke-current"
-                          strokeWidth="8"
-                          fill="transparent"
-                          r="40"
-                          cx="50"
-                          cy="50"
-                        />
-                        <motion.circle
-                          className="text-french-blue stroke-current"
-                          strokeWidth="8"
-                          strokeLinecap="round"
-                          fill="transparent"
-                          r="40"
-                          cx="50"
-                          cy="50"
-                          initial={{ strokeDasharray: "0 251" }}
-                          animate={{ strokeDasharray: `${(result.fitScore / 100) * 251} 251` }}
-                          transition={{ duration: 2, ease: "easeOut" }}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-5xl font-extrabold text-foreground">
-                          {result.fitScore}%
-                        </span>
-                        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Match</span>
-                      </div>
-                    </div>
-                    <Badge className={`px-6 py-2 text-sm font-bold rounded-xl ${
-                      result.fitScore >= 80 ? "bg-emerald-500/10 text-emerald-600" :
-                      result.fitScore >= 50 ? "bg-yellow-500/10 text-yellow-600" :
-                      "bg-red-500/10 text-red-600"
-                    }`}>
-                      {result.fitScore >= 80 ? "Highly Compatible" : 
-                       result.fitScore >= 50 ? "Partial Match" : "Significant Gap"}
-                    </Badge>
-                  </CardContent>
-                </Card>
-
-                {/* Keywords & Analysis */}
-                <Card className="neo lg:col-span-2 border-none">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-xl font-bold flex items-center gap-3">
-                      <Sparkles className="h-6 w-6 text-french-blue" />
-                      Gap Analysis
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-8">
-                    {/* Matching Keywords */}
-                    <div className="space-y-3">
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                        <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                        Matched Skills ({result.matchedKeywords.length})
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {result.matchedKeywords.map((kw: string, i: number) => (
-                          <span key={i} className="px-4 py-2 rounded-xl neo-pressed text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                            {kw}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Missing Keywords */}
-                    <div className="space-y-3">
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                        <div className="h-2 w-2 rounded-full bg-red-400" />
-                        Missing Requirements ({result.missingKeywords.length})
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {result.missingKeywords.map((kw: string, i: number) => (
-                          <span key={i} className="px-4 py-2 rounded-xl neo-sm text-sm font-bold text-red-500 dark:text-red-400">
-                            {kw}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recommendation Card */}
-              <Card className="neo border-none overflow-hidden h-fit">
-                <CardHeader className="bg-french-blue/5 border-b border-border/5">
-                  <div className="flex items-center justify-between w-full">
-                    <CardTitle className="text-xl font-bold flex items-center gap-3">
-                      <TrendingUp className="h-6 w-6 text-french-blue" />
-                      Strategic Insights
-                    </CardTitle>
-                    <div className="flex items-center gap-2 px-4 py-1.5 rounded-full neo-sm bg-background/50">
-                      <span className="text-xs font-bold text-muted-foreground">Interview Prob:</span>
-                      <span className="text-sm font-bold text-french-blue">{result.interviewProbability}%</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-8 space-y-6">
-                  <p className="text-lg font-medium text-foreground/90 leading-relaxed italic">
-                    {result.summary}
-                  </p>
-                  
-                  <Separator className="opacity-10" />
-                  
-                  <div className="space-y-4">
-                    <h4 className="font-bold text-foreground">Actionable Recommendations:</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-1 gap-3">
-                      {result.recommendations.map((rec: string, i: number) => (
-                        <div key={i} className="flex items-start gap-4 p-4 rounded-2xl neo-pressed font-medium text-muted-foreground/80">
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg neo-sm text-xs font-bold text-french-blue">
-                            {i+1}
-                          </span>
-                          {rec}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-      </div>
-    </div>
-  );
+    );
 }

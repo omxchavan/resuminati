@@ -4,37 +4,40 @@ import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Flame, Mail } from "lucide-react";
+import { Flame, Mail, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 export default function SignInPage() {
     const [email, setEmail] = useState("demo@roastmyresume.ai");
 
     return (
-        <div className="flex min-h-[80vh] items-center justify-center px-4">
+        <div className="flex min-h-[80vh] items-center justify-center px-4 bg-m3-surface">
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full max-w-md"
             >
-                <div className="text-center mb-8">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 shadow-lg shadow-orange-500/30">
-                        <Flame className="h-7 w-7 text-white" />
-                    </div>
-                    <h1 className="text-2xl font-bold">Welcome to RoastMyResume</h1>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                        Sign in to analyze and optimize your resume
+                <div className="text-center mb-10">
+                    <motion.div 
+                        initial={{ rotate: -10 }}
+                        animate={{ rotate: 0 }}
+                        className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[2rem] bg-m3-primary text-m3-on-primary m3-elev-3"
+                    >
+                        <Flame className="h-10 w-10" />
+                    </motion.div>
+                    <h1 className="text-4xl font-black text-m3-on-surface tracking-tighter">RESUMINATI</h1>
+                    <p className="mt-4 text-sm font-black text-m3-on-surface-variant uppercase tracking-widest opacity-60">
+                        AI-POWERED CAREER COMMAND CENTER
                     </p>
                 </div>
 
-                <Card className="border-white/10 bg-white/[0.03]">
-                    <CardContent className="pt-6 space-y-4">
+                <Card className="m3-card !p-8 bg-m3-surface border border-m3-outline-variant/30 m3-elev-1 rounded-[3rem]">
+                    <CardContent className="p-0 space-y-6">
                         {/* Google Sign In */}
                         <Button
                             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-                            variant="outline"
-                            className="w-full h-11 gap-3 border-white/15 hover:bg-white/5"
+                            className="w-full h-16 rounded-full bg-m3-surface border border-m3-outline-variant text-m3-on-surface font-black uppercase tracking-widest text-xs gap-4 hover:bg-m3-surface-variant/20 transition-all shadow-none"
                         >
                             <svg className="h-5 w-5" viewBox="0 0 24 24">
                                 <path
@@ -57,28 +60,24 @@ export default function SignInPage() {
                             Continue with Google
                         </Button>
 
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t border-white/10" />
-                            </div>
-                            <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-muted-foreground">
-                                    or
-                                </span>
-                            </div>
+                        <div className="relative flex items-center justify-center">
+                            <div className="absolute inset-0 border-t border-m3-outline-variant/30" />
+                            <span className="relative bg-m3-surface px-4 text-[10px] font-black uppercase text-m3-on-surface-variant/40 tracking-[0.3em]">
+                                Secure Gateway
+                            </span>
                         </div>
 
                         {/* Demo Login */}
-                        <div className="space-y-3">
-                            <div>
-                                <label className="text-sm text-muted-foreground mb-1 block">
-                                    Email
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-m3-on-surface-variant uppercase tracking-widest ml-4 opacity-60">
+                                    Identity Access
                                 </label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-sm focus:border-orange-500/50 focus:outline-none"
+                                    className="w-full h-14 rounded-2xl bg-m3-surface-variant/20 border-none px-6 text-base font-black text-m3-on-surface focus:ring-2 focus:ring-m3-primary transition-all outline-none"
                                 />
                             </div>
                             <Button
@@ -88,13 +87,13 @@ export default function SignInPage() {
                                         callbackUrl: "/dashboard",
                                     })
                                 }
-                                className="w-full h-11 gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700"
+                                className="m3-button-filled w-full h-16 text-lg gap-3 m3-elev-2 shadow-m3-primary/20"
                             >
-                                <Mail className="h-4 w-4" />
-                                Demo Login
+                                <Sparkles className="h-6 w-6" />
+                                Demo Access
                             </Button>
-                            <p className="text-xs text-center text-muted-foreground">
-                                Use demo login to try the app without Google OAuth
+                            <p className="text-[10px] text-center text-m3-on-surface-variant font-black uppercase tracking-widest opacity-40">
+                                Sandbox Mode — No Persistence
                             </p>
                         </div>
                     </CardContent>
