@@ -86,8 +86,8 @@ export default function DashboardPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Left Column - Upload & Actions */}
-                <div className="lg:col-span-4 space-y-8">
+                {/* Left Column - Upload & Actions (Sticky) */}
+                <div className="lg:col-span-3 space-y-8 lg:sticky lg:top-24 lg:self-start">
                     {/* Upload Card */}
                     <Card className="m3-card !p-2 bg-m3-surface-variant/20 border-m3-outline-variant/50">
                         <CardHeader className="pb-4">
@@ -187,7 +187,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Right Column - Results */}
-                <div className="lg:col-span-8 space-y-10">
+                <div className="lg:col-span-9 space-y-10">
                     {!resumeData && (
                         <Card className="m3-card bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant">
                             <CardContent className="flex flex-col items-center justify-center py-32 text-center">
@@ -248,16 +248,16 @@ export default function DashboardPage() {
 
                                  {/* Optimization Roadmap & Quantified Impact */}
                                  {analysisData.suggestions && analysisData.suggestions.length > 0 && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                        <Card className="m3-card bg-m3-surface-variant/10 border-none h-full">
+                                    <div className="flex flex-col gap-10">
+                                        <Card className="m3-card bg-m3-surface-variant/10 border-none">
                                             <CardHeader className="pb-6">
                                                 <CardTitle className="flex items-center gap-4 text-xl font-black text-m3-on-surface">
                                                     <Sparkles className="h-7 w-7 text-m3-primary" />
-                                                    Optimization
+                                                    Optimization Roadmap
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <div className="space-y-5">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                                     {analysisData.suggestions.map((suggestion: string, i: number) => (
                                                         <div
                                                             key={i}
@@ -275,7 +275,7 @@ export default function DashboardPage() {
 
                                         {/* Impact Metrics */}
                                         {analysisData.impactMetrics && analysisData.impactMetrics.length > 0 && (
-                                            <Card className="m3-card bg-m3-primary-container/10 border-none h-full shadow-inner">
+                                            <Card className="m3-card bg-m3-primary-container/10 border-none shadow-inner">
                                                 <CardHeader className="pb-6">
                                                     <CardTitle className="flex items-center gap-4 text-xl font-black text-m3-primary">
                                                         <TrendingUp className="h-7 w-7" />
@@ -283,7 +283,7 @@ export default function DashboardPage() {
                                                     </CardTitle>
                                                 </CardHeader>
                                                 <CardContent>
-                                                    <div className="space-y-5">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                                         {analysisData.impactMetrics.map((metric: string, i: number) => (
                                                             <div
                                                                 key={i}

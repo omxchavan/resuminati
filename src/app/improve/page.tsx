@@ -18,6 +18,8 @@ import {
     Sparkles,
     Star,
     Zap,
+    Target,
+    FileSearch,
 } from "lucide-react";
 import { useResume } from "@/components/ResumeProvider";
 import { Separator } from "@/components/ui/separator";
@@ -165,32 +167,34 @@ export default function ImprovePage() {
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Navigation Sidebar */}
-                <div className="lg:col-span-3 space-y-4">
-                    {[
-                        { id: "bullets", icon: Star, label: "Bullet Points" },
-                        { id: "cover-letter", icon: FileText, label: "Cover Letter" },
-                        { id: "interview", icon: MessageSquare, label: "Interview Prep" },
-                    ].map((tool) => (
-                        <button
-                            key={tool.id}
-                            onClick={() => setActiveTool(tool.id as any)}
-                            className={`w-full flex items-center gap-4 px-6 py-5 rounded-[2rem] transition-all font-black text-sm uppercase tracking-wider
-                                ${activeTool === tool.id 
-                                    ? "bg-m3-primary text-m3-on-primary m3-elev-2 scale-105" 
-                                    : "text-m3-on-surface-variant hover:bg-m3-surface-variant/50"}`}
-                        >
-                            <tool.icon className={`h-5 w-5 ${activeTool === tool.id ? "text-m3-on-primary" : "text-m3-primary"}`} />
-                            {tool.label}
-                        </button>
-                    ))}
+                {/* Navigation Sidebar (Sticky) */}
+                <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 lg:self-start">
+                    <div className="p-2 rounded-[2.5rem] bg-m3-surface-variant/10 border border-m3-outline-variant/10">
+                        {[
+                            { id: "bullets", icon: Star, label: "Bullet Points" },
+                            { id: "cover-letter", icon: FileText, label: "Cover Letter" },
+                            { id: "interview", icon: MessageSquare, label: "Interview Prep" },
+                        ].map((tool) => (
+                            <button
+                                key={tool.id}
+                                onClick={() => setActiveTool(tool.id as any)}
+                                className={`w-full flex items-center gap-4 px-6 py-4 rounded-[2rem] transition-all font-black text-xs uppercase tracking-wider mb-2 last:mb-0
+                                    ${activeTool === tool.id 
+                                        ? "bg-m3-primary text-m3-on-primary m3-elev-2 scale-102" 
+                                        : "text-m3-on-surface-variant hover:bg-m3-surface-variant/50"}`}
+                            >
+                                <tool.icon className={`h-4 w-4 ${activeTool === tool.id ? "text-m3-on-primary" : "text-m3-primary"}`} />
+                                {tool.label}
+                            </button>
+                        ))}
+                    </div>
 
-                    <Card className="mt-10 m3-card !p-4 bg-m3-surface-variant/20 border-none m3-elev-0">
+                    <Card className="m3-card !p-4 bg-m3-surface-variant/20 border-none m3-elev-0">
                         <ResumeUploader />
                         {resumeData && (
-                            <div className="mt-4 flex items-center justify-center gap-2 py-2 px-4 rounded-full bg-emerald-100/50 text-emerald-700">
-                                <CheckCircle2 className="h-4 w-4" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Resume Context Locked</span>
+                            <div className="mt-4 flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-emerald-100/50 text-emerald-700">
+                                <CheckCircle2 className="h-3 w-3" />
+                                <span className="text-[9px] font-black uppercase tracking-widest">Context Locked</span>
                             </div>
                         )}
                     </Card>
@@ -205,74 +209,86 @@ export default function ImprovePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="space-y-8"
+                                className="space-y-12"
                             >
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5 h-full">
-                                        <CardHeader>
-                                            <CardTitle className="text-xl font-black flex items-center gap-4 text-m3-on-surface">
-                                                <PenTool className="h-6 w-6 text-m3-primary" />
-                                                Original Statement
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-6">
-                                            <Textarea
-                                                placeholder='e.g., "Responsible for team management and project delivery."'
-                                                className="w-full h-48 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
-                                                value={bulletPoint}
-                                                onChange={(e) => setBulletPoint(e.target.value)}
-                                            />
-                                            <Button
-                                                onClick={improveBullet}
-                                                disabled={improving || !bulletPoint}
-                                                className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
-                                            >
-                                                {improving ? (
-                                                    <Loader2 className="h-6 w-6 animate-spin mr-3" />
-                                                ) : (
-                                                    <Zap className="h-6 w-6 mr-3" />
-                                                )}
-                                                {improving ? "Optimizing Assets..." : "Optimize with AI"}
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-
-                                    <Card className="m3-card bg-m3-surface-variant/10 border-none h-full overflow-hidden">
-                                        <CardHeader>
-                                            <CardTitle className="text-xl font-black flex items-center gap-4 text-emerald-700 dark:text-emerald-400">
-                                                <Sparkles className="h-6 w-6" />
-                                                AI Polished Result
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            {improvement ? (
-                                                <div className="space-y-6">
-                                                    <div className="p-6 rounded-[2rem] bg-m3-surface m3-elev-1 border border-m3-outline-variant/10">
-                                                        <p className="text-[10px] font-black text-m3-on-surface-variant uppercase tracking-widest mb-3 opacity-50">Impact Analysis</p>
-                                                        <p className="text-m3-on-surface-variant line-through decoration-red-500/30 font-medium">{improvement.original}</p>
-                                                    </div>
-                                                    <div className="p-8 rounded-[2.5rem] bg-m3-primary-container text-m3-on-primary-container m3-elev-1 border-none relative overflow-hidden">
-                                                        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-[4rem]" />
-                                                        <p className="text-[10px] font-black text-m3-primary uppercase tracking-widest mb-4">Refined Point</p>
-                                                        <p className="text-lg font-black leading-relaxed">{improvement.improved}</p>
-                                                    </div>
-                                                    <div className="p-5 rounded-2xl bg-m3-secondary-container/30 border border-m3-secondary-container">
-                                                        <p className="text-xs font-bold text-m3-on-secondary-container leading-relaxed">
-                                                            <span className="font-black italic">Strategic Context:</span> {improvement.explanation}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5 max-w-2xl">
+                                    <CardHeader className="pb-4">
+                                        <CardTitle className="text-xl font-black flex items-center gap-4 text-m3-on-surface">
+                                            <PenTool className="h-6 w-6 text-m3-primary" />
+                                            Original Statement
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <Textarea
+                                            placeholder='e.g., "Responsible for team management and project delivery."'
+                                            className="w-full h-32 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
+                                            value={bulletPoint}
+                                            onChange={(e) => setBulletPoint(e.target.value)}
+                                        />
+                                        <Button
+                                            onClick={improveBullet}
+                                            disabled={improving || !bulletPoint}
+                                            className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
+                                        >
+                                            {improving ? (
+                                                <Loader2 className="h-6 w-6 animate-spin mr-3" />
                                             ) : (
-                                                <div className="flex flex-col items-center justify-center py-32 text-center opacity-20">
-                                                    <div className="h-32 w-32 rounded-full bg-m3-surface m3-elev-1 flex items-center justify-center mb-8">
-                                                        <Zap className="h-14 w-14" />
-                                                    </div>
-                                                    <p className="font-black uppercase tracking-[0.2em] text-xs">Awaiting Analysis</p>
-                                                </div>
+                                                <Zap className="h-6 w-6 mr-3" />
                                             )}
-                                        </CardContent>
+                                            {improving ? "Optimizing Assets..." : "Optimize with AI"}
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+
+                                {improvement ? (
+                                    <div className="flex flex-col gap-10">
+                                        <Card className="m3-card bg-m3-surface-variant/10 border-none overflow-hidden">
+                                            <CardHeader className="pb-6">
+                                                <CardTitle className="text-xl font-black flex items-center gap-4 text-m3-primary">
+                                                    <Sparkles className="h-7 w-7" />
+                                                    AI Polished Result
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                                    <div className="p-8 rounded-[2rem] bg-m3-surface m3-elev-1 border border-m3-outline-variant/10">
+                                                        <p className="text-[10px] font-black text-m3-on-surface-variant uppercase tracking-widest mb-4 opacity-50">Before</p>
+                                                        <p className="text-m3-on-surface-variant line-through decoration-red-500/40 font-bold decoration-2 leading-relaxed">{improvement.original}</p>
+                                                    </div>
+                                                    <div className="p-8 rounded-[2.5rem] bg-m3-primary text-m3-on-primary m3-elev-2 relative overflow-hidden">
+                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[5rem]" />
+                                                        <p className="text-[10px] font-black text-white/60 uppercase tracking-widest mb-4">After (AI Precision)</p>
+                                                        <p className="text-xl font-black leading-relaxed italic">{improvement.improved}</p>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card className="m3-card bg-m3-primary-container/10 border-none m3-elev-0">
+                                            <CardHeader className="pb-4">
+                                                <CardTitle className="text-xs font-black text-m3-primary uppercase tracking-[0.2em] flex items-center gap-3">
+                                                    <Zap className="h-4 w-4" />
+                                                    STRATEGIC CONTEXT
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-base font-bold text-m3-on-surface-variant leading-relaxed opacity-90">
+                                                    {improvement.explanation}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                ) : (
+                                    <Card className="m3-card bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant/30 py-32 flex flex-col items-center justify-center text-center">
+                                        <div className="h-24 w-24 rounded-[3rem] bg-m3-surface m3-elev-1 flex items-center justify-center mb-8">
+                                            <Star className="h-10 w-10 text-m3-on-surface-variant/30" />
+                                        </div>
+                                        <h3 className="text-2xl font-black text-m3-on-surface mb-3">Await Signal...</h3>
+                                        <p className="text-m3-on-surface-variant max-w-sm font-medium opacity-70 leading-relaxed">
+                                            Input a bullet point above to receive an optimized version based on recruiter triggers.
+                                        </p>
                                     </Card>
-                                </div>
+                                )}
                             </motion.div>
                         )}
 
@@ -282,97 +298,106 @@ export default function ImprovePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="space-y-8"
+                                className="space-y-12"
                             >
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                                    <div className="lg:col-span-5 space-y-6">
-                                        <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5">
-                                            <CardHeader>
-                                                <CardTitle className="text-xl font-black text-m3-on-surface">Letter Context</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1">Company Entity</label>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="e.g. Acme Corp"
-                                                        className="w-full h-14 rounded-2xl m3-input bg-m3-surface-variant/20 border-none px-6 text-base font-bold text-m3-on-surface focus:bg-m3-surface-variant/40 transition-all outline-none"
-                                                        value={companyName}
-                                                        onChange={(e) => setCompanyName(e.target.value)}
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1">Target Job Description</label>
-                                                    <Textarea
-                                                        placeholder="Paste JD for deep personalization..."
-                                                        className="w-full h-56 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
-                                                        value={coverLetterJD}
-                                                        onChange={(e) => setCoverLetterJD(e.target.value)}
-                                                    />
-                                                </div>
-                                                <Button
-                                                    onClick={generateCoverLetter}
-                                                    disabled={generatingCL || !resumeData}
-                                                    className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
-                                                >
-                                                    {generatingCL ? (
-                                                        <Loader2 className="h-6 w-6 animate-spin mr-3" />
-                                                    ) : (
-                                                        <FileText className="h-6 w-6 mr-3" />
-                                                    )}
-                                                    {generatingCL ? "Synthesizing Draft..." : "Draft Cover Letter"}
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                        
-                                        {!resumeData && (
-                                            <div className="p-6 rounded-3xl bg-red-100/50 border border-red-200 text-center">
-                                                <p className="text-xs font-black text-red-700 uppercase tracking-widest">Profile Context Required</p>
+                                <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5 max-w-2xl">
+                                    <CardHeader className="pb-4">
+                                        <CardTitle className="text-xl font-black text-m3-on-surface flex items-center gap-4">
+                                            <FileText className="h-6 w-6 text-m3-primary" />
+                                            Letter Specifications
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1 opacity-70">Company Name</label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="e.g. Acme Corp"
+                                                    className="w-full h-14 rounded-2xl m3-input bg-m3-surface-variant/20 border-none px-6 text-base font-bold text-m3-on-surface focus:bg-m3-surface-variant/40 transition-all outline-none"
+                                                    value={companyName}
+                                                    onChange={(e) => setCompanyName(e.target.value)}
+                                                />
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1 opacity-70">Job Description (Personalization Source)</label>
+                                            <Textarea
+                                                placeholder="Paste the job description for deep alignment..."
+                                                className="w-full h-32 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
+                                                value={coverLetterJD}
+                                                onChange={(e) => setCoverLetterJD(e.target.value)}
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={generateCoverLetter}
+                                            disabled={generatingCL || !resumeData}
+                                            className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
+                                        >
+                                            {generatingCL ? (
+                                                <Loader2 className="h-6 w-6 animate-spin mr-3" />
+                                            ) : (
+                                                <Zap className="h-6 w-6 mr-3" />
+                                            )}
+                                            {generatingCL ? "Synthesizing Persona..." : "Draft Master Letter"}
+                                        </Button>
+                                    </CardContent>
+                                </Card>
 
-                                    <Card className="lg:col-span-7 m3-card bg-m3-surface border-none m3-elev-1 min-h-[600px] flex flex-col">
-                                        <CardHeader className="flex flex-row items-center justify-between border-b border-m3-outline-variant/30 pb-6 px-8">
-                                            <CardTitle className="text-xl font-black text-m3-on-surface">Draft Preview</CardTitle>
-                                            {coverLetter && (
+                                {coverLetter ? (
+                                    <div className="flex flex-col gap-10">
+                                        <Card className="m3-card bg-m3-surface border-none m3-elev-2 overflow-hidden min-h-[600px] flex flex-col">
+                                            <CardHeader className="flex flex-row items-center justify-between border-b border-m3-outline-variant/20 pb-6 px-10 pt-8">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="h-10 w-10 rounded-xl bg-m3-primary-container text-m3-primary flex items-center justify-center shrink-0 m3-elev-1">
+                                                        <FileText className="h-6 w-6" />
+                                                    </div>
+                                                    <CardTitle className="text-xl font-black text-m3-on-surface">Precision Draft</CardTitle>
+                                                </div>
                                                 <Button 
                                                     variant="ghost" 
                                                     size="sm" 
-                                                    className="rounded-full px-6 h-10 border border-m3-outline-variant text-m3-primary font-black text-xs hover:bg-m3-primary/5 transition-all"
+                                                    className="rounded-full px-8 h-12 border border-m3-outline-variant text-m3-primary font-black text-xs hover:bg-m3-primary/10 transition-all m3-elev-1"
                                                     onClick={() => copyToClipboard(coverLetter.coverLetter)}
                                                 >
                                                     {copied ? <CheckCircle2 className="h-4 w-4 text-emerald-500 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-                                                    {copied ? "COPIED" : "COPY TO CLIPBOARD"}
+                                                    {copied ? "COPIED TO CLIPBOARD" : "COPY PERSONA"}
                                                 </Button>
-                                            )}
-                                        </CardHeader>
-                                        <CardContent className="flex-1 p-0 flex flex-col">
-                                            {coverLetter ? (
-                                                <div className="flex-1 flex flex-col">
-                                                    <div className="flex-1 p-10 max-h-[500px] overflow-y-auto bg-m3-surface-variant/5">
-                                                        <p className="text-lg leading-relaxed whitespace-pre-wrap font-medium text-m3-on-surface-variant italic">
-                                                            {coverLetter.coverLetter}
-                                                        </p>
+                                            </CardHeader>
+                                            <CardContent className="flex-1 p-0 flex flex-col">
+                                                <div className="flex-1 p-12 bg-m3-surface-variant/5">
+                                                    <p className="text-lg leading-relaxed whitespace-pre-wrap font-bold text-m3-on-surface-variant italic opacity-90">
+                                                        {coverLetter.coverLetter}
+                                                    </p>
+                                                </div>
+                                                <div className="p-10 border-t border-m3-outline-variant/20 bg-m3-surface flex flex-col gap-6">
+                                                    <div className="flex items-center gap-3">
+                                                        <Sparkles className="h-5 w-5 text-m3-primary" />
+                                                        <span className="text-xs font-black text-m3-primary uppercase tracking-[0.2em]">Strategic Highlights Loaded</span>
                                                     </div>
-                                                    <div className="p-8 border-t border-m3-outline-variant/30 flex flex-wrap gap-3 mt-auto">
-                                                        <span className="text-[10px] font-black text-m3-primary uppercase tracking-widest w-full mb-1">Key Value Propositions</span>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                                         {coverLetter.highlights?.map((h: string, i: number) => (
-                                                            <Badge key={i} className="bg-m3-primary-container text-m3-primary border-none px-4 py-1.5 text-xs font-black rounded-lg m3-elev-0">
-                                                                {h}
-                                                            </Badge>
+                                                            <div key={i} className="flex items-center gap-4 p-5 rounded-[1.5rem] bg-m3-primary-container/10 border border-m3-primary/5 m3-elev-0">
+                                                                <div className="h-2 w-2 rounded-full bg-m3-primary" />
+                                                                <span className="text-xs font-black text-m3-on-surface-variant uppercase tracking-wider">{h}</span>
+                                                            </div>
                                                         ))}
                                                     </div>
                                                 </div>
-                                            ) : (
-                                                <div className="flex-1 flex flex-col items-center justify-center py-40 text-center opacity-20">
-                                                    <FileText className="h-24 w-24 mb-6" />
-                                                    <p className="font-black uppercase tracking-[0.2em] text-xs">No Letter Generated</p>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                ) : (
+                                    <div className="p-32 rounded-[3.5rem] bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant/30 flex flex-col items-center justify-center text-center">
+                                        <FileSearch className="h-24 w-24 mb-8 opacity-20" />
+                                        <h3 className="text-2xl font-black text-m3-on-surface mb-3 opacity-30 tracking-tight">No Letter Forged Yet</h3>
+                                        {!resumeData && (
+                                            <Badge className="bg-red-100 text-red-700 border-none px-6 py-2 font-black uppercase tracking-widest m3-elev-1">
+                                                Profile Context Missing
+                                            </Badge>
+                                        )}
+                                    </div>
+                                )}
                             </motion.div>
                         )}
 
@@ -382,128 +407,126 @@ export default function ImprovePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="space-y-8"
+                                className="space-y-12"
                             >
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                                    <div className="lg:col-span-4">
-                                        <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5">
-                                            <CardHeader>
-                                                <CardTitle className="text-xl font-black text-m3-on-surface">Target Arena</CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1">Target Role JD</label>
-                                                    <Textarea
-                                                        placeholder="Paste JD for tactical questions..."
-                                                        className="w-full h-56 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
-                                                        value={interviewJD}
-                                                        onChange={(e) => setInterviewJD(e.target.value)}
-                                                    />
+                                <Card className="m3-card bg-m3-surface border-2 border-m3-primary/5 max-w-2xl">
+                                    <CardHeader className="pb-4">
+                                        <CardTitle className="text-xl font-black text-m3-on-surface flex items-center gap-4">
+                                            <Target className="h-6 w-6 text-m3-primary" />
+                                            Target Arena
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-m3-on-surface-variant uppercase tracking-widest ml-1 opacity-70">Target Role Job Description</label>
+                                            <Textarea
+                                                placeholder="Paste the job description for specific scenario mapping..."
+                                                className="w-full h-32 m3-input bg-m3-surface-variant/20 border-none p-6 text-base font-medium leading-relaxed resize-none focus:bg-m3-surface-variant/40"
+                                                value={interviewJD}
+                                                onChange={(e) => setInterviewJD(e.target.value)}
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={generateQuestions}
+                                            disabled={generatingIQ || !resumeData}
+                                            className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
+                                        >
+                                            {generatingIQ ? (
+                                                <Loader2 className="h-6 w-6 animate-spin mr-3" />
+                                            ) : (
+                                                <Zap className="h-6 w-6 mr-3" />
+                                            )}
+                                            {generatingIQ ? "Mapping Scenarios..." : "Get Combat Tactics"}
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+
+                                {questions ? (
+                                    <div className="flex flex-col gap-12">
+                                        {/* Domain Expertise */}
+                                        <div className="space-y-6">
+                                            <div className="flex items-center gap-3 px-2">
+                                                <div className="h-10 w-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 m3-elev-1">
+                                                    <Star className="h-6 w-6" />
                                                 </div>
-                                                <Button
-                                                    onClick={generateQuestions}
-                                                    disabled={generatingIQ || !resumeData}
-                                                    className="m3-button-filled w-full h-16 text-lg m3-elev-2 hover:m3-elev-4 active:scale-95 transition-all"
-                                                >
-                                                    {generatingIQ ? (
-                                                        <Loader2 className="h-6 w-6 animate-spin mr-3" />
-                                                    ) : (
-                                                        <MessageSquare className="h-6 w-6 mr-3" />
-                                                    )}
-                                                    {generatingIQ ? "Scenario Mapping..." : "Get Tactics"}
-                                                </Button>
+                                                <h3 className="text-xl font-black text-blue-900 uppercase tracking-wider">Domain Expertise</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {questions.technical.map((q: any, i: number) => (
+                                                    <Card key={i} className="m3-card border-none bg-m3-surface m3-elev-1 !p-6 hover:m3-elev-3 transition-all duration-300">
+                                                        <div className="flex justify-between items-start gap-4 mb-5">
+                                                            <p className="text-base font-black text-m3-on-surface leading-tight">{q.question}</p>
+                                                            <Badge className="bg-m3-primary-container text-m3-primary px-3 py-1 font-black text-[9px] rounded-lg tracking-widest shrink-0 border-none m3-elev-1">
+                                                                {q.difficulty?.toUpperCase()}
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-start gap-4 bg-m3-surface-variant/5 p-4 rounded-2xl border-l-4 border-m3-primary/30">
+                                                            <Zap className="h-4 w-4 text-m3-primary shrink-0 mt-1" />
+                                                            <p className="text-sm font-bold text-m3-on-surface-variant italic leading-relaxed">{q.hint}</p>
+                                                        </div>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Cultural Impact */}
+                                        <div className="space-y-6">
+                                            <div className="flex items-center gap-3 px-2">
+                                                <div className="h-10 w-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 m3-elev-1">
+                                                    <Zap className="h-6 w-6" />
+                                                </div>
+                                                <h3 className="text-xl font-black text-orange-900 uppercase tracking-wider">Cultural Impact</h3>
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                {questions.behavioral.map((q: any, i: number) => (
+                                                    <Card key={i} className="m3-card border-none bg-m3-surface m3-elev-1 !p-6 hover:m3-elev-3 transition-all duration-300">
+                                                        <div className="flex justify-between items-start gap-4 mb-5">
+                                                            <p className="text-base font-black text-m3-on-surface leading-tight">{q.question}</p>
+                                                            <Badge className="bg-orange-100 text-orange-700 px-3 py-1 font-black text-[9px] rounded-lg tracking-widest shrink-0 border-none m3-elev-1">
+                                                                {q.difficulty?.toUpperCase()}
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-start gap-4 bg-orange-50/30 p-4 rounded-2xl border-l-4 border-orange-300/50">
+                                                            <Star className="h-4 w-4 text-orange-600 shrink-0 mt-1" />
+                                                            <p className="text-sm font-bold text-m3-on-surface-variant italic leading-relaxed">{q.hint}</p>
+                                                        </div>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Tactical Advantages */}
+                                        <Card className="m3-card bg-emerald-100/30 border-none m3-elev-0">
+                                            <CardHeader className="pb-6">
+                                                <CardTitle className="text-lg font-black text-emerald-800 flex items-center gap-4 tracking-wider">
+                                                    <Sparkles className="h-6 w-6" />
+                                                    TACTICAL ADVANTAGES
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                    {questions.tips.map((tip: string, i: number) => (
+                                                        <div key={i} className="p-5 rounded-[2rem] bg-white/70 m3-elev-1 border border-emerald-100/50">
+                                                            <p className="text-xs font-bold text-emerald-900 leading-relaxed">
+                                                                {tip}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     </div>
-
-                                    <div className="lg:col-span-8 space-y-8">
-                                        {questions ? (
-                                            <div className="space-y-8">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                    {/* Technical */}
-                                                    <div className="space-y-5">
-                                                        <div className="flex items-center gap-3 mb-2 px-2">
-                                                            <div className="h-8 w-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                                                                <Star className="h-4 w-4" />
-                                                            </div>
-                                                            <h4 className="text-lg font-black text-m3-on-surface">Domain Expertise</h4>
-                                                        </div>
-                                                        <div className="space-y-5">
-                                                            {questions.technical.map((q: any, i: number) => (
-                                                                <Card key={i} className="m3-card border-none bg-m3-surface m3-elev-1 !p-6 hover:m3-elev-3 transition-all duration-300">
-                                                                    <div className="flex justify-between items-start gap-4 mb-4">
-                                                                        <p className="text-base font-black text-m3-on-surface leading-snug">{q.question}</p>
-                                                                        <Badge className="bg-m3-primary-container text-m3-primary px-3 py-1 font-black text-[9px] rounded-lg tracking-widest shrink-0">
-                                                                            {q.difficulty?.toUpperCase()}
-                                                                        </Badge>
-                                                                    </div>
-                                                                    <div className="flex items-start gap-4 bg-m3-surface-variant/10 p-4 rounded-2xl border-l-4 border-m3-primary">
-                                                                        <Zap className="h-4 w-4 text-m3-primary shrink-0 mt-1" />
-                                                                        <p className="text-sm font-bold text-m3-on-surface-variant italic leading-relaxed">{q.hint}</p>
-                                                                    </div>
-                                                                </Card>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Behavioral */}
-                                                    <div className="space-y-5">
-                                                        <div className="flex items-center gap-3 mb-2 px-2">
-                                                            <div className="h-8 w-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
-                                                                <Zap className="h-4 w-4" />
-                                                            </div>
-                                                            <h4 className="text-lg font-black text-m3-on-surface">Cultural Impact</h4>
-                                                        </div>
-                                                        <div className="space-y-5">
-                                                            {questions.behavioral.map((q: any, i: number) => (
-                                                                <Card key={i} className="m3-card border-none bg-m3-surface m3-elev-1 !p-6 hover:m3-elev-3 transition-all duration-300">
-                                                                    <div className="flex justify-between items-start gap-4 mb-4">
-                                                                        <p className="text-base font-black text-m3-on-surface leading-snug">{q.question}</p>
-                                                                        <Badge className="bg-orange-100 text-orange-700 px-3 py-1 font-black text-[9px] rounded-lg tracking-widest shrink-0">
-                                                                            {q.difficulty?.toUpperCase()}
-                                                                        </Badge>
-                                                                    </div>
-                                                                    <div className="flex items-start gap-4 bg-orange-50/50 p-4 rounded-2xl border-l-4 border-orange-400">
-                                                                        <Star className="h-4 w-4 text-orange-600 shrink-0 mt-1" />
-                                                                        <p className="text-sm font-bold text-m3-on-surface-variant italic leading-relaxed">{q.hint}</p>
-                                                                    </div>
-                                                                </Card>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <Card className="m3-card bg-emerald-100/30 border border-emerald-200">
-                                                    <CardHeader className="py-4">
-                                                        <CardTitle className="text-xs font-black text-emerald-800 flex items-center gap-3 tracking-[0.2em]">
-                                                            <Sparkles className="h-4 w-4" />
-                                                            TACTICAL ADVANTAGES
-                                                        </CardTitle>
-                                                    </CardHeader>
-                                                    <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pb-6">
-                                                        {questions.tips.map((tip: string, i: number) => (
-                                                            <div key={i} className="p-4 rounded-2xl bg-white/70 m3-elev-1 border border-emerald-100/50">
-                                                                <p className="text-xs font-bold text-emerald-900 leading-relaxed">
-                                                                    {tip}
-                                                                </p>
-                                                            </div>
-                                                        ))}
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        ) : (
-                                            <div className="m3-card bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant/30 h-full min-h-[400px] flex flex-col items-center justify-center p-20 text-center">
-                                                <div className="h-32 w-32 rounded-[2.5rem] bg-m3-surface m3-elev-1 flex items-center justify-center mb-8">
-                                                    <MessageSquare className="h-14 w-14 text-m3-on-surface-variant/30" />
-                                                </div>
-                                                <h3 className="text-2xl font-black text-m3-on-surface mb-3">No Intel Loaded</h3>
-                                                <p className="text-m3-on-surface-variant max-w-sm font-medium opacity-70 leading-relaxed">
-                                                    Enter a target job description and get tactical questions designed specifically for your profile.
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                ) : (
+                                    <Card className="m3-card bg-m3-surface-variant/10 border-dashed border-2 border-m3-outline-variant/30 py-32 flex flex-col items-center justify-center text-center">
+                                        <div className="h-24 w-24 rounded-[3rem] bg-m3-surface m3-elev-1 flex items-center justify-center mb-8">
+                                            <MessageSquare className="h-10 w-10 text-m3-on-surface-variant/30" />
+                                        </div>
+                                        <h3 className="text-2xl font-black text-m3-on-surface mb-3">No Combat Intel Loaded</h3>
+                                        <p className="text-m3-on-surface-variant max-w-sm font-medium opacity-70 leading-relaxed">
+                                            Enter the job context above to generate tailored interview questions and tactical hints.
+                                        </p>
+                                    </Card>
+                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
