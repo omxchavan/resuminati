@@ -1,13 +1,46 @@
 import mammoth from "mammoth";
-import { PDFParse } from "pdf-parse";
+import * as pdf from "pdf-parse";
+
+/**
+ * Clean and normalize text extracted from documents
+ */
+function cleanText(text: string): string {
+    if (!text) return "";
+
+    return text
+        // Replace non-breaking spaces and other weird whitespace with standard space
+        .replace(/[\u00A0\u1680\u180E\u2000-\u200B\u202F\u205F\u3000\uFEFF]/g, " ")
+        // Normalize line breaks
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n")
+        // Remove common random characters/artifacts mentioned by user
+        .replace(/\u0000/g, "") // Null character
+        .replace(/\uFFFD/g, "") // Replacement character (often shown as ?)
+        .replace(/\u00B0/g, "") // Degree symbol
+        .replace(/\u00AD/g, "") // Soft hyphen
+        // Replace common ligatures with standard characters
+        .replace(/\uFB00/g, "ff")
+        .replace(/\uFB01/g, "fi")
+        .replace(/\uFB02/g, "fl")
+        .replace(/\uFB03/g, "ffi")
+        .replace(/\uFB04/g, "ffl")
+        // Normalize bullets to a simple dash for better AI processing
+        .replace(/[\u2022\u2023\u25E6\u2043\u2219\u2013\u2014]/g, "-")
+        // Remove other unusual control characters
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "")
+        // Clean up multiple spaces but keep single/double newlines
+        .replace(/[ \t]+/g, " ")
+        // Collapse 3+ newlines into 2
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+}
 
 export async function parsePDF(buffer: Buffer): Promise<string> {
     try {
-        const parser = new PDFParse({ data: buffer });
-        const result = await parser.getText();
-        await parser.destroy();
-        console.log(result.text);
-        return result.text.trim();
+        // Handle different export styles of pdf-parse for compatibility
+        const parseFunction = (pdf as any).default || pdf;
+        const data = await parseFunction(buffer);
+        return cleanText(data.text);
     } catch (error) {
         console.error("PDF parse error:", error);
         throw new Error("Failed to parse PDF file");
@@ -17,7 +50,7 @@ export async function parsePDF(buffer: Buffer): Promise<string> {
 export async function parseDOCX(buffer: Buffer): Promise<string> {
     try {
         const result = await mammoth.extractRawText({ buffer });
-        return result.value.trim();
+        return cleanText(result.value);
     } catch (error) {
         console.error("DOCX parse error:", error);
         throw new Error("Failed to parse DOCX file");

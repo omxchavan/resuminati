@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import RoastCard from "@/components/RoastCard";
@@ -26,6 +26,14 @@ export default function RoastPage() {
     const roast = analyses.roast;
     const [roasting, setRoasting] = useState(false);
     const [intensity, setIntensity] = useState<"mild" | "medium" | "brutal">("medium");
+
+    // Sync state when data is loaded from localStorage
+    useEffect(() => {
+        if (isLoaded && analyses.roast?.roastLevel) {
+            const level = analyses.roast.roastLevel;
+            setIntensity(level === "spicy" ? "medium" : level);
+        }
+    }, [isLoaded, analyses.roast]);
 
     const getRoast = async () => {
         if (!resumeData) return;

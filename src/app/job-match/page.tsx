@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import { Button } from "@/components/ui/button";
@@ -29,9 +29,16 @@ interface MatchResult {
 export default function JobMatchPage() {
   const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
   const jobMatchData = analyses.jobMatch;
-  const [jobDescription, setJobDescription] = useState(jobMatchData?.jobDescription || "");
+  const [jobDescription, setJobDescription] = useState("");
   const [matching, setMatching] = useState(false);
   const result = jobMatchData?.result || null;
+
+  // Sync state when data is loaded from localStorage
+  useEffect(() => {
+    if (isLoaded && jobMatchData?.jobDescription) {
+      setJobDescription(jobMatchData.jobDescription);
+    }
+  }, [isLoaded, jobMatchData?.jobDescription]);
 
   const calculateMatch = async () => {
     if (!resumeData || !jobDescription) return;

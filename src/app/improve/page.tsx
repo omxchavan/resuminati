@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResumeUploader from "@/components/ResumeUploader";
 import { Button } from "@/components/ui/button";
@@ -21,28 +21,37 @@ import {
 } from "lucide-react";
 import { useResume } from "@/components/ResumeProvider";
 import { Separator } from "@/components/ui/separator";
-
 export default function ImprovePage() {
     const { resumeData, isLoaded, analyses, setAnalysis } = useResume();
     const [activeTool, setActiveTool] = useState<"bullets" | "cover-letter" | "interview">("bullets");
 
     // Bullet improver
-    const [bulletPoint, setBulletPoint] = useState(analyses.bulletImprover?.original || "");
+    const [bulletPoint, setBulletPoint] = useState("");
     const [improving, setImproving] = useState(false);
     const improvement = analyses.bulletImprover || null;
 
     // Cover letter
-    const [coverLetterJD, setCoverLetterJD] = useState(analyses.coverLetter?.jobDescription || "");
-    const [companyName, setCompanyName] = useState(analyses.coverLetter?.companyName || "");
+    const [coverLetterJD, setCoverLetterJD] = useState("");
+    const [companyName, setCompanyName] = useState("");
     const [generatingCL, setGeneratingCL] = useState(false);
     const coverLetter = analyses.coverLetter?.result || null;
 
     // Interview questions
-    const [interviewJD, setInterviewJD] = useState(analyses.interviewPrep?.jobDescription || "");
+    const [interviewJD, setInterviewJD] = useState("");
     const [generatingIQ, setGeneratingIQ] = useState(false);
     const questions = analyses.interviewPrep?.result || null;
 
     const [copied, setCopied] = useState(false);
+
+    // Sync state when data is loaded from localStorage
+    useEffect(() => {
+        if (isLoaded) {
+            if (analyses.bulletImprover?.original) setBulletPoint(analyses.bulletImprover.original);
+            if (analyses.coverLetter?.jobDescription) setCoverLetterJD(analyses.coverLetter.jobDescription);
+            if (analyses.coverLetter?.companyName) setCompanyName(analyses.coverLetter.companyName);
+            if (analyses.interviewPrep?.jobDescription) setInterviewJD(analyses.interviewPrep.jobDescription);
+        }
+    }, [isLoaded, analyses]);
 
     const improveBullet = async () => {
         if (!bulletPoint) return;
