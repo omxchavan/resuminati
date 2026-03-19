@@ -4,11 +4,9 @@ import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Flame, Mail, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Flame } from "lucide-react";
 
 export default function SignInPage() {
-    const [email, setEmail] = useState("demo@roastmyresume.ai");
 
     return (
         <div className="flex min-h-[80vh] items-center justify-center px-4 bg-m3-surface">
@@ -65,36 +63,6 @@ export default function SignInPage() {
                             <span className="relative bg-m3-surface px-4 text-[10px] font-black uppercase text-m3-on-surface-variant/40 tracking-[0.3em]">
                                 Secure Gateway
                             </span>
-                        </div>
-
-                        {/* Demo Login */}
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-m3-on-surface-variant uppercase tracking-widest ml-4 opacity-60">
-                                    Identity Access
-                                </label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full h-14 rounded-2xl bg-m3-surface-variant/20 border-none px-6 text-base font-black text-m3-on-surface focus:ring-2 focus:ring-m3-primary transition-all outline-none"
-                                />
-                            </div>
-                            <Button
-                                onClick={() =>
-                                    signIn("credentials", {
-                                        email,
-                                        callbackUrl: "/dashboard",
-                                    })
-                                }
-                                className="m3-button-filled w-full h-16 text-lg gap-3 m3-elev-2 shadow-m3-primary/20"
-                            >
-                                <Sparkles className="h-6 w-6" />
-                                Demo Access
-                            </Button>
-                            <p className="text-[10px] text-center text-m3-on-surface-variant font-black uppercase tracking-widest opacity-40">
-                                Sandbox Mode — No Persistence
-                            </p>
                         </div>
                     </CardContent>
                 </Card>

@@ -12,8 +12,15 @@ const ROAST_PROMPTS = {
     brutal: ROAST_PROMPT_BRUTAL,
 };
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
 export async function POST(request: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
         const { resumeText, roastLevel = "spicy" } = await request.json();
 
         if (!resumeText) {

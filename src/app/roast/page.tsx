@@ -70,17 +70,20 @@ export default function RoastPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 bg-m3-surface min-h-screen">
             {/* Header */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-12 text-center"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-12"
             >
-                <div className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-[2rem] bg-orange-100 text-orange-600 m3-elev-1 mb-8">
-                    <Flame className="h-8 w-8" />
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-m3-primary-container text-m3-primary m3-elev-1">
+                        <Flame className="h-6 w-6" />
+                    </div>
+                    <span className="text-sm font-black text-m3-primary uppercase tracking-widest">AI Roast Engine</span>
                 </div>
                 <h1 className="text-5xl font-black tracking-tight text-m3-on-surface">
-                    AI Resume <span className="text-orange-600 italic">Roaster</span>
+                    AI Resume <span className="text-m3-primary italic">Roaster</span>
                 </h1>
-                <p className="mt-4 text-xl text-m3-on-surface-variant font-medium max-w-2xl mx-auto opacity-80">
+                <p className="mt-4 text-xl text-m3-on-surface-variant font-medium max-w-2xl opacity-80">
                     Brutal honesty is the fastest way to a better career. Choose your intensity and let's go.
                 </p>
             </motion.div>

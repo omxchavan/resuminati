@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "@/lib/ai";
 import { ATS_ANALYSIS_PROMPT } from "@/lib/prompts";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
 export async function POST(request: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
         const { resumeText, resumeId } = await request.json();
 
         if (!resumeText) {

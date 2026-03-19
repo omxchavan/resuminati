@@ -8,7 +8,20 @@ import { authOptions } from "@/lib/auth";
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        const userId = (session?.user as { id?: string })?.id || "demo-user-001";
+        if (!session || !session.user) {
+            return NextResponse.json(
+                { error: "Unauthorized. Please sign in." },
+                { status: 401 }
+            );
+        }
+        
+        const userId = (session.user as { id?: string }).id;
+        if (!userId) {
+            return NextResponse.json(
+                { error: "No user ID found in session" },
+                { status: 401 }
+            );
+        }
 
         const formData = await request.formData();
         const file = formData.get("file") as File;
