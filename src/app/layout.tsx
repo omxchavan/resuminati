@@ -4,6 +4,8 @@ import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/react";
+
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -46,6 +48,7 @@ export default function RootLayout({
             <ResumeProvider>
               <Navbar />
               <main className="min-h-screen pt-16">{children}</main>
+              <Analytics />
             </ResumeProvider>
           </ThemeProvider>
         </SessionProvider>
