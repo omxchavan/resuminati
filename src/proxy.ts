@@ -1,4 +1,7 @@
-export { default } from "next-auth/middleware";
+import middleware from "next-auth/middleware";
+export default middleware;
+export const proxy = middleware;
+
 
 export const config = {
   // Protect all routes except the ones listed in the matcher
